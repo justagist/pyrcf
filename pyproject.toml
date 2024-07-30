@@ -1,0 +1,129 @@
+[project]
+name = "python_template"
+version = "0.2.0"
+authors = [{ name = "Austin Gregg-Smith", email = "blooop@gmail.com" }]
+description = "A python package template"
+readme = "README.md"
+
+dependencies = []
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.dependencies]
+python = ">=3.10"
+
+[tool.pixi.feature.py310.dependencies]
+python = "3.10.*"
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+
+#an environment for launching vscode with rocker and deps_rocker
+[tool.pixi.feature.devenv]
+dependencies = { python = "3.10" }
+pypi-dependencies = { deps-rocker = ">=0.2" }
+tasks = { code = "scripts/launch_vscode.sh",code-nocache = "scripts/launch_vscode.sh --nocache" }
+
+[tool.pixi.pypi-dependencies]
+python_template = { path = ".", editable = true }
+
+[project.optional-dependencies]
+test = [
+  "black>=23,<=24.4.2",
+  "pylint>=2.17.7,<=3.2.3",
+  "pytest-cov>=4.1,<=5.0.0",
+  "pytest>=7.4,<=8.2.2",
+  "hypothesis>=6.82,<=6.103.1",
+  "ruff>=0.0.280,<=0.4.8",
+  "coverage>=7.2.7,<=7.5.3",
+]
+
+[project.urls]
+Source = "https://github.com/blooop/python_template"
+Home = "https://github.com/blooop/python_template"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include= ["python_template"]
+
+# Environments
+[tool.pixi.environments]
+default = {features = ["test"], solve-group = "default" }
+py310 = ["py310","test"]
+py311 = ["py311","test"]
+devenv = { features = [
+  "devenv",
+], solve-group = "devenv", no-default-feature = true }
+
+[tool.pixi.tasks]
+format = "black ."
+check-clean-workspace = "git diff --exit-code"
+ruff-lint = "ruff check . --fix"
+pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
+lint = { depends_on = ["ruff-lint", "pylint"] }
+style = { depends_on = ["format","lint"]}
+commit-format = "git commit -a -m'autoformat code' || true"
+test = "pytest"
+coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
+coverage-report = "coverage report -m"
+update-lock = "pixi update && git commit -a -m'update pixi.lock' || true"
+push = "git push"
+update-lock-push = { depends_on = ["update-lock", "push"] }
+fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
+fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
+ci-no-cover = { depends_on = ["style", "test"] }
+ci = { depends_on = ["format","ruff-lint","check-clean-workspace","pylint", "coverage", "coverage-report"] }
+ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
+clear-pixi = "rm -rf .pixi pixi.lock"
+setup-git-merge-driver = "git config merge.ourslock.driver true"
+update-from-template-repo = "./scripts/update_from_template.sh"
+
+
+
+
+[tool.pylint]
+extension-pkg-whitelist = ["numpy"]
+jobs = 16                           #detect number of cores
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
+enable = "no-else-return,consider-using-in"
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100 # Same as Black.
+
+target-version = "py310"
+
+[tool.ruff.lint]
+# Never enforce `E501` (line length violations).
+#"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
+ignore = ["E501", "E902", "F841"]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+
+
+[tool.coverage.run]
+omit = ["*/test/*", "__init__.py"]
+
+[tool.coverage.report]
+exclude_also = [
+  "def __repr__",
+  "if False:",
+  "if 0:",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+  "pass",
+  "(_):",
+]

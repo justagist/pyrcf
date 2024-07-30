@@ -1,0 +1,27 @@
+{
+	"name": "python_template",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": ".."
+	},
+	// "onCreateCommand": "pre-commit install --hook-type commit-msg",
+	"postCreateCommand": "flit install --symlink;",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.pylint",
+				"ms-python.black-formatter",
+				"njpwerner.autodocstring",
+				"charliermarsh.ruff",
+				"mhutchie.git-graph",
+				"eamodio.gitlens",
+				"tamasfe.even-better-toml",
+				"Codium.codium",
+				"ms-azuretools.vscode-docker",
+				"ryanluker.vscode-coverage-gutters"
+			]
+		}
+	},
+}
