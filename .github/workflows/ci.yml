@@ -28,5 +28,7 @@ jobs:
           pixi run -e ${{ matrix.environment }} ci 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
+          with:
+            fail_ci_if_error: false # disable for now until full system is defined
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
