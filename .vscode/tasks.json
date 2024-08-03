@@ -1,0 +1,189 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "set <cfg> from active file; sa",
+			"type": "shell",
+			"command": "echo ${file} > ${workspaceFolder}/.vscode/active_file.cfg; echo Setting the current file: ${file} as the active file.",
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "run <cfg>",
+			"type": "shell",
+			"command": "RUNFILE=$(cat ${workspaceFolder}/.vscode/active_file.cfg); echo Running file: $RUNFILE; pixi run python3 $RUNFILE",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": "True"
+			}
+		},
+		{
+			"label": "autoformat",
+			"detail": "Use ruff and black to automatically fix and format the code",
+			"type": "shell",
+			"command": "pixi run fmt"
+		},		
+		{
+			"label": "lint",
+			"detail": "Run pylint on files tracked by git",
+			"type": "shell",
+			"command": "pixi run lint"
+		},
+		{
+			"label": "code coverage",
+			"detail": "Run code coverage and print a coverage report, also update coverage.xml for in the in-editor coverage gutter",
+			"type": "shell",
+			"command": "pixi run coverage"
+		},
+		{
+			"label": "code coverage report",
+			"detail": "Display the code coverage report. This assumes you have already have a coverage report generated. If not run the code ocverage task",
+			"type": "shell",
+			"dependsOn": [
+				"code coverage"
+			],
+			"command": "pixi run coverage-report"
+		},
+		{
+			"label": "pytest duration",
+			"detail": "Run pytest and track the duration of each test",
+			"type": "shell",
+			"command": "pytest --durations=0"
+		},
+		{
+			"label": "check CI",
+			"detail": "Runs the basic formatting and linting and tests performed by CI",
+			"type": "shell",
+			"command": "pixi run ci-no-cover"
+		},
+		{
+			"label": "check CI, commit and push",
+			"detail": "Pull,s from main, runs the basic formatting and linting checks performed by CI and pushes changes",
+			"type": "shell",
+			"dependsOn": [
+				"git pull origin main",
+				"check CI",
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "git pull origin main",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git pull --commit --no-edit ; git pull origin main --commit --no-edit && git push"
+		},
+		{
+			"label": "git push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"command": "git push"
+		},
+		{
+			"label": "git pull origin main and push",
+			"detail": "merge changes from master into the current branch and push",
+			"type": "shell",
+			"dependsOn": [
+				"git pull origin main",
+				"git push"
+			],
+			"dependsOrder": "sequence",
+		},
+		{
+			"label": "update from template repo",
+			"detail": "Pull any changes from the template repo into this repo by adding it as a remote. The remote is removed at the end of the command.  You may need to resolve merge conflicts",
+			"type": "shell",
+			"command": "setup_scripts/update_from_template.sh"
+		},		
+		{
+			"label": "rename template project",
+			"detail": "Replaces all instances of the template project name with a new name. ",
+			"type": "shell",
+			"command": "setup_scripts/rename_project.sh '${input:new_project_name}' '${input:new_author_name}'  '${input:new_author_email}'  '${input:github_username}'"
+		},		
+		{
+			"label": "flit install",
+			"type": "shell",
+			"command": "flit install --symlink"
+		},
+		{
+			"label": "flit publish",
+			"type": "shell",
+			"command": "flit publish"
+		},				
+		{
+			"label": "setup: host",
+			"detail": "Sets up docker, nvidia docker git-lfs and rocker which are used to clone and setup docker containers",
+			"type": "shell",
+			"command": "./setup_scripts/setup_host.sh",
+			"presentation": {
+				"reveal": "always",
+				"panel": "new"
+			  }
+		},
+		{
+			"label": "launch container",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
+			"type": "shell",
+			"command": "setup_scripts/launch_vscode.sh"
+		},
+		{
+			"label": "launch container no cache",
+			"detail": "Uses rocker to launch a container and spawns a new vscode window attached to the container",
+			"type": "shell",
+			"command": "setup_scripts/launch_vscode.sh --nocache"
+		},
+		{
+            "label": "Install All Recommended Extensions",
+            "type": "shell",           
+            "linux": {
+                "command": "cat .vscode/extensions.json | jq .recommendations[] | xargs -n 1 code . --install-extension"
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+        },	
+		{
+            "label": "set git config recurse submodules",
+            "type": "shell",           
+            "linux": {
+                "command": [" git config submodule.recurse true"],
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+        },	
+	],
+	"inputs": [
+		{
+			"type": "promptString",
+			"id": "new_project_name",
+			"description": "The new name of the project",
+			"default": "python_template"
+		},
+		{
+			"type": "promptString",
+			"id": "new_author_name",
+			"description": "Name of author/maintainer"
+		},
+		{
+			"type": "promptString",
+			"id": "new_author_email",
+			"description": "Email id of author/maintainer"
+		},
+		{
+			"type": "promptString",
+			"id": "github_username",
+			"description": "Github username of author/maintainer"
+		}
+	]
+}

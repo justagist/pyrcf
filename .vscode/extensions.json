@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "njpwerner.autodocstring",
+        "charliermarsh.ruff",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "tamasfe.even-better-toml",
+        "Codium.codium",
+        "ms-azuretools.vscode-docker",
+        "ryanluker.vscode-coverage-gutters",
+        "jjjermiah.pixi-vscode"       
+    ]
+}
