@@ -14,3 +14,13 @@ from .robot_io import (
     RobotState,
     RobotCmd,
 )
+from .motion_datatypes import (
+    Vector3DTrajType,
+    QuatTrajType,
+    Trajectory3D,
+    MultiFrameTrajectory3D,
+    PointMotion,
+    FrameMotion,
+    GeneralisedTrajectory,
+)
+from .planner_outputs import LocalMotionPlan, GlobalMotionPlan, ControlMode, PlannerMode

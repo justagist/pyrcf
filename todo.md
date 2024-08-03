@@ -4,12 +4,11 @@
 
 - [ ] base classes
     - [x] pyrcf_component
-    - [ ] controller
-    - [ ] robot interface
-    - [ ] global planner
-    - [ ] ui interface
-    - [ ] local planner
-    - [ ] agent
+    - [x] controller
+    - [x] robot interface
+    - [x] global planner
+    - [x] local planner
+    - [x] agent
     - [ ] loop debugger
     - [ ] custom callbacks
 - [ ] data types
@@ -24,12 +23,12 @@
 
 ## robot interfaces
 
-- [ ] dummy robot
+- [x] dummy robot
 - [ ] bullet robot
 
 ## controllers
 
-- [ ] dummy controller
+- [x] dummy controller
 
 ## local planners
 
@@ -38,6 +37,11 @@
 ## UI/Global planners
 
 - [ ] dummy gp
+
+## agents
+
+- [x] dummy agent
+- [ ] planner controller agent
 
 ## controller managers
 
@@ -64,3 +68,4 @@
 
 - [ ] use nptyping
 - [ ] default np values in dataclass field not supported in python 3.11+
+- [ ] exceptions

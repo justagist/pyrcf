@@ -22,7 +22,6 @@ class PyRCFComponent(ABC):
         - LocalMotionPlannerBase
         - ControllerBase
         - StateEstimatorBase
-        - UIBase (follows `GlobalMotionPlannerBase` protocol)
     """
 
     def shutdown(self):
