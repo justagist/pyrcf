@@ -60,6 +60,14 @@ if __name__ == "__main__":
 
     control_loop.run(
         loop_rate=ctrl_loop_rate,
-        prestep_callbacks=[PrintStuffCallback(to_print="\nStarting a loop iteration...\n")],
-        poststep_callbacks=[PrintStuffCallback(to_print="\nDone with loop iteration...\n\n")],
+        # add a callback to run at the start of every iteration of the control loop
+        prestep_callbacks=[
+            PrintStuffCallback(to_print="\npre-step callback text: Starting a loop iteration...\n")
+        ],
+        # add a callback to run at the end of every iteration of the control loop
+        poststep_callbacks=[
+            PrintStuffCallback(
+                to_print="\npost-step callback text: Done with loop iteration...\n\n"
+            )
+        ],
     )
