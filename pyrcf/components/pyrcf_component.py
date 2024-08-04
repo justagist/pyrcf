@@ -10,7 +10,7 @@ Abstract base class for all core components in PyRCF control loop.
 """
 
 from abc import ABC
-from ..logging import logging
+from ..core.logging import logging
 
 
 class PyRCFComponent(ABC):
