@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class CustomCallback(ABC):
+class CustomCallbackBase(ABC):
     """Abstract base class for defining custom callbacks to be executed in the control loop."""
 
     @abstractmethod

@@ -7,7 +7,7 @@ from ..components.controller_manager.controller_manager_base import ControllerMa
 from ..components.global_planners.global_planner_base import GlobalMotionPlannerBase
 from ..components.state_estimators.state_estimator_base import StateEstimatorBase
 from ..components.ctrl_loop_debuggers.ctrl_loop_debugger_base import CtrlLoopDebuggerBase
-from ..components.callback_handlers.callbacks_base import CustomCallback
+from ..components.callback_handlers.callbacks_base import CustomCallbackBase
 from ..utils.time_utils import RateLimiter, PythonPerfClock, ClockBase
 
 
@@ -84,8 +84,8 @@ class SimpleManagedCtrlLoop:
         loop_rate: float,
         clock: ClockBase = PythonPerfClock(),
         debuggers: List[CtrlLoopDebuggerBase] = None,
-        prestep_callbacks: List[CustomCallback] = None,
-        poststep_callbacks: List[CustomCallback] = None,
+        prestep_callbacks: List[CustomCallbackBase] = None,
+        poststep_callbacks: List[CustomCallbackBase] = None,
     ):
         """The main control loop.
 
@@ -98,10 +98,10 @@ class SimpleManagedCtrlLoop:
                 the clock is so that sim time can be used if required.
             debuggers (CtrlLoopDebuggerBase, optional): List of `CtrlLoopDebuggerBase` objects that
                 are to be run in the control loop.
-            prestep_callbacks (List[CustomCallback], optional): List of `CustomCallback` objects to
+            prestep_callbacks (List[CustomCallbackBase], optional): List of `CustomCallbackBase` objects to
                 be run in the control loop. Not recommended to do this except for debugging.
                 Defaults to None.
-            poststep_callbacks (List[CustomCallback]. optional): List of additional `CustomCallback`
+            poststep_callbacks (List[CustomCallbackBase]. optional): List of additional `CustomCallbackBase`
                 objects to be run in the control loop. Not recommended to do this except for
                 debugging. Defaults to None.
         """
@@ -111,8 +111,8 @@ class SimpleManagedCtrlLoop:
         if poststep_callbacks is None:
             poststep_callbacks = []
 
-        for cb in poststep_callbacks:
-            assert callable(cb)
+        for cb in prestep_callbacks + poststep_callbacks:
+            assert isinstance(cb, CustomCallbackBase)
 
         logging.info(f"{self.__class__.__name__}: Activating robot...")
         while not self.robot.activate():
