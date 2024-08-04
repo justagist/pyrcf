@@ -1134,7 +1134,7 @@ packages:
   name: pyrcf
   version: 0.2.0
   path: .
-  sha256: beb13bf51176b6cdba2a17668f5d8a955e4d356cd13ec41e06c1ac9566165745
+  sha256: 8e9a0ca20a36243a149ff6544240d3d3c628ce6c8533544d56f960a0632102a2
   requires_dist:
   - pybullet>=3.2.6,<4
   - numpy

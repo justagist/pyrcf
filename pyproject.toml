@@ -2,7 +2,7 @@
 name = "pyrcf"
 version = "0.2.0"
 authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
-description = "A python package template"
+description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
 
 dependencies = ["pybullet>=3.2.6,<4", "numpy", "pybullet-robot>=0.1.1,<0.2", "pin>=2.7.0,<3"]
@@ -134,3 +134,6 @@ exclude_also = [
   "pass",
   "(_):",
 ]
+
+[project.scripts]
+pyrcf-visualise-robot = "pyrcf.executables.visualise_robot:main"
