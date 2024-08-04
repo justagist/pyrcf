@@ -5,7 +5,7 @@ authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A python package template"
 readme = "README.md"
 
-dependencies = []
+dependencies = ["pybullet>=3.2.6,<4", "numpy", "pybullet-robot>=0.1.1,<0.2", "pin>=2.7.0,<3"]
 
 [tool.pixi.project]
 channels = ["conda-forge"]
@@ -13,9 +13,11 @@ platforms = ["linux-64"]
 
 [tool.pixi.dependencies]
 python = ">=3.10,<3.11"
-numpy = ">=2.0.1,<3"
 nptyping = ">=2.5.0,<3"
 dataclasses = ">=0.8,<0.9"
+numpy = ">=1.6,<2.0"
+yourdfpy = ">=0.0.56,<0.0.57"
+scipy = ">=1.14.0,<2"
 
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
@@ -24,11 +26,8 @@ python = "3.10.*"
 # [tool.pixi.feature.py312.dependencies]
 # python = "3.12.*"
 
-#an environment for launching vscode with rocker and deps_rocker
 [tool.pixi.feature.devenv]
 dependencies = { python = "3.10" }
-pypi-dependencies = { deps-rocker = ">=0.2" }
-tasks = { code = "scripts/launch_vscode.sh",code-nocache = "scripts/launch_vscode.sh --nocache" }
 
 [tool.pixi.feature.test.tasks]
 test = "pytest"
@@ -56,14 +55,14 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include= ["pyrcf"]
+include = ["pyrcf"]
 
 # Environments
 [tool.pixi.environments]
-default = {features = ["test"], solve-group = "default" }
-py310 = ["py310","test"]
-# py311 = ["py311","test"]
-# py312 = ["py312","test"]
+default = { features = ["test"], solve-group = "default" }
+py310 = ["py310", "test"]
+# py311 = ["py311", "test"]
+# py312 = ["py312", "test"]
 devenv = { features = [
   "devenv",
 ], solve-group = "devenv", no-default-feature = true }
@@ -74,7 +73,7 @@ check-clean-workspace = "git diff --exit-code"
 ruff-lint = "ruff check . --fix"
 pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends_on = ["ruff-lint", "pylint"] }
-style = { depends_on = ["format","lint"]}
+style = { depends_on = ["format", "lint"] }
 commit-format = "git commit -a -m'autoformat code' || true"
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
@@ -85,13 +84,12 @@ update-lock-push = { depends_on = ["update-lock", "push"] }
 fix = { depends_on = ["update-lock", "format", "ruff-lint"] }
 fix-commit-push = { depends_on = ["fix", "commit-format", "update-lock-push"] }
 ci-no-cover = { depends_on = ["style", "test"] }
-ci = { depends_on = ["format","ruff-lint", "coverage", "coverage-report"] }
-ci-push = {depends_on=["format","ruff-lint","update-lock","ci","push"]}
+ci = { depends_on = ["format", "ruff-lint", "coverage", "coverage-report"] }
+ci-push = { depends_on = ["format", "ruff-lint", "update-lock", "ci", "push"] }
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
 update-from-template-repo = "./setup_scripts/update_from_template.sh"
 view-coverage-html = "coverage html -d .htmlcov"
-
 
 
 [tool.pylint]
