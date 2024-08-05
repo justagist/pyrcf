@@ -53,10 +53,14 @@ def main():
 
     try:
         if Path(sys.argv[1]).is_file():
-            robot = PybulletRobot(urdf_path=sys.argv[1], floating_base=not fixed_base)
+            robot = PybulletRobot(
+                urdf_path=sys.argv[1], floating_base=not fixed_base, enable_torque_mode=False
+            )
         else:
             robot: PybulletRobot = PybulletRobot.fromAwesomeRobotDescriptions(
-                robot_description_name=sys.argv[1], floating_base=not fixed_base
+                robot_description_name=sys.argv[1],
+                floating_base=not fixed_base,
+                enable_torque_mode=False,
             )
     except Exception:
         print(usage_string)

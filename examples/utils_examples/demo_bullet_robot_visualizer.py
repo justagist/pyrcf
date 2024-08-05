@@ -13,6 +13,7 @@ if __name__ == "__main__":
     # load any PybulletRobot instance here
     robot: PybulletRobot = PybulletRobot.fromAwesomeRobotDescriptions(
         robot_description_name="pepper_description",
+        enable_torque_mode=False,  # when visualising, use position control mode
     )
 
     # load the visualiser using this robot
