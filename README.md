@@ -21,50 +21,49 @@ In the long run, this package will also provide implementations of popular motio
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue)](https://www.python.org/downloads/)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)
 
-
 ## PyRCF Philosophy
 
 PyRCF follows the principle of a single thread control loop where components are communicating with each other strictly using pre-defined message types,
 and run sequentially.
 
-### Example of a generic control loop
+### A generic control loop
 
-```python
+```text
 
-# NOTE: this is not meant to be a script that you can use directly. See it as more of a pseudocode
-# for a control loop that can be written using the framework.
+LOOP:
+  # Read latest robot state
+  robot_state = ROBOT_INTERFACE->read_robot_state()
 
-period: float = 1.0 / loop_rate
-while True:
-    # read latest robot state
-    robot_state = robot.read()
+  # Update robot state with estimations (when all states are not directly measurable)
+  robot_state = STATE_ESTIMATOR->update_robot_state_estimates(robot_state)
 
-    # use state estimator to compute robot states that are not directly observable from the robot interface
-    # such as robot pose in the world, base velocity, foot contact states, etc.
-    robot_state = state_estimator.update_robot_state_with_state_estimates(
-        robot_state=robot_state
-    )
+  # Generate global plan (high-level task objective or target)
+  global_plan = GLOBAL_PLANNER->generate_global_plan()
 
-    # generate global plan for local planner (here, we simply generate a fake plan using user input)
-    # but in real world scenarious, this is typically a trajectory plan or action sequence for
-    # achieving a specific task goal (e.g. trajectory from point A to B avoiding collision, or
-    # sequence of actions/trajectories to achieve a manipulation action)
-    global_plan = global_planner.generate_global_plan()
+  # Generate local plan based on state and global plan
+  local_plan = LOCAL_PLANNER->generate_local_plan(robot_state, global_plan)
 
-    # generate local plan/references for controller using a local planner, given global plan target
-    local_plan = planner.generate_local_plan(
-        robot_state=robot_state, global_plan=global_plan
-    )
+  # Generate control command based on state and local plan
+  cmd = CONTROLLER->compute_commands(robot_state, local_plan)
 
-    # use the local plan to generate instantaneous command to be sent to the robot
-    cmd = controller.update(robot_state=robot_state, local_plan=local_plan)
+  # Send command to robot
+  ROBOT_INTERFACE->write_robot_command(cmd)
 
-    # write the commands to the robot
-    robot.write(cmd=cmd)
+  # Maintain loop frequency (naive implementation)
+  SLEEP(period)
 
-    # maintain control loop frequency (this is naive implementation)
-    time.sleep(period)
+END LOOP
 
 ```
+
+This package provides interfaces to define custom components (such as controller, robot interface, global planner,
+local planner, etc) that can be run in a control loop, as well as provides an implementation of a control loop
+class which can execute these components in the required order at the specified rate. Implementations of simple
+forms of all components are available in this package, including simulated interfaces for many robot embodiments.
+
+Custom controllers and planners can be implemented and quickly tested on existing robot interfaces or on custom
+robot interfaces (which can be easily defined).
+
+More complex algorithms for control and planning will be provided by this package over time.
 
 Tutorials and more details about concepts will be provided soon in the [tutorials](examples/tutorials) folder.
