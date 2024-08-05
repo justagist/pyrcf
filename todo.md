@@ -3,28 +3,29 @@
 ## core
 
 - [ ] base classes
-    - [x] pyrcf_component
-    - [x] controller
-    - [x] robot interface
-    - [x] global planner
-    - [x] local planner
-    - [x] agent
-    - [ ] loop debugger
-    - [ ] custom callbacks
+  - [x] pyrcf_component
+  - [x] controller
+  - [x] robot interface
+  - [x] global planner
+  - [x] local planner
+  - [x] agent
+  - [x] loop debugger
+  - [x] custom callbacks
 - [ ] data types
-    - [x] robot io
-    - [x] tf types
-    - [ ] planner types
-    - [ ] motion datatypes
-    - [ ] debug datatypes
-- [ ] controller manager
-- [ ] control loop
-- [ ] logging
+  - [x] robot io
+  - [x] tf types
+  - [x] planner types
+  - [x] motion datatypes
+  - [ ] debug datatypes
+- [x] controller manager
+- [x] control loop
+- [x] logging
+- [x] loop debuggers
 
 ## robot interfaces
 
 - [x] dummy robot
-- [ ] bullet robot
+- [x] bullet robot
 
 ## controllers
 
@@ -32,40 +33,48 @@
 
 ## local planners
 
-- [ ] dummy local planner
+- [x] dummy local planner
 
 ## UI/Global planners
 
-- [ ] dummy gp
+- [x] dummy gp
 
 ## agents
 
 - [x] dummy agent
-- [ ] planner controller agent
+- [x] planner controller agent
+- [x] ml agent
+- [x] pytorch agent
 
 ## controller managers
 
+- [x] simple cm
+
 ## control loop implementations
+
+- [x] simple managed cl
+- [ ] minimal
 
 ## utilities
 
 - [ ] filters
 - [ ] frame_transforms
-- [ ] math_utils
-- [ ] urdf_utils
-- [ ] kd
+- [x] math_utils
+- [x] urdf_utils
+- [x] kd
+    - [x] pinocchio
 - [ ] data io
-- [ ] loop debuggers
 
 ## examples
-- [ ] Dummy loop with core components
-- [ ] robot loader
-- [ ] robot visualiser
-- [ ] 
 
+- [x] Dummy loop with core components
+- [ ] robot loader
+- [x] robot visualiser
+- [ ]
 
 # QoL
 
+- [ ] add mjcf support to PybulletRobot
 - [ ] use nptyping
 - [ ] default np values in dataclass field not supported in python 3.11+
 - [ ] exceptions

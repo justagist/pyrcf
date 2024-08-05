@@ -7,7 +7,7 @@ from ..components.controller_manager.controller_manager_base import ControllerMa
 from ..components.global_planners.global_planner_base import GlobalMotionPlannerBase
 from ..components.state_estimators.state_estimator_base import StateEstimatorBase
 from ..components.ctrl_loop_debuggers.ctrl_loop_debugger_base import CtrlLoopDebuggerBase
-from ..components.callback_handlers.callbacks_base import CustomCallbackBase
+from ..components.callback_handlers.base_callbacks import CustomCallbackBase
 from ..utils.time_utils import RateLimiter, PythonPerfClock, ClockBase
 
 
