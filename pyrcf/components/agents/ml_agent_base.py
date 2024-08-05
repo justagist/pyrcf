@@ -1,12 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
-from ...core.types import (
-    GlobalMotionPlan,
-    RobotCmd,
-    RobotState,
-    JointStates,
-)
+from ...core.types import GlobalMotionPlan, RobotCmd, RobotState, JointStates
 from .agent_base import AgentBase
 
 

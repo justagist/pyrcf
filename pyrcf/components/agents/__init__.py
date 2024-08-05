@@ -7,3 +7,4 @@ uses the global plan and outputs a robot command (implement an agent from MLAgen
 from .agent_base import AgentBase, DummyAgent
 from .planner_controller_agent import PlannerControllerAgent
 from .ml_agent_base import MLAgentBase
+from .torchscript_agent_base import TorchScriptAgentBase
