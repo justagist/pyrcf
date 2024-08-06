@@ -5,7 +5,7 @@ authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
 
-dependencies = ["pybullet>=3.2.6,<4", "numpy", "pybullet-robot>=0.1.1,<0.2", "pin>=2.7.0,<3"]
+dependencies = ["pybullet>=3.2.6,<4", "numpy", "pin>=2.7.0,<3", "pybullet-robot>=0.1.4"]
 
 [tool.pixi.project]
 channels = ["conda-forge"]

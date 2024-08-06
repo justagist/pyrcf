@@ -156,7 +156,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e9/56/2a0a0b46cf65d2dd533a3f3a5647d63a1e4558646eab3a57a8e502b78c82/pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d6/d9/257919d55def214ffa7794aab1e1cd61443b6126759e053536929d74e37a/pybullet_robot-0.1.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/4e/b4/f0d8724e59d79e469b8bfdce781e2e2d36cd6ebe51cbad852da587ce6296/pybullet_robot-0.1.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/09/88/1a406dd0b17a4796f025d8c937d8d56f97869cffa55c21d9edb07f5a3912/pylint-3.2.6-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
@@ -350,7 +350,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e9/56/2a0a0b46cf65d2dd533a3f3a5647d63a1e4558646eab3a57a8e502b78c82/pybullet-3.2.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d6/d9/257919d55def214ffa7794aab1e1cd61443b6126759e053536929d74e37a/pybullet_robot-0.1.1-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/4e/b4/f0d8724e59d79e469b8bfdce781e2e2d36cd6ebe51cbad852da587ce6296/pybullet_robot-0.1.4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/09/88/1a406dd0b17a4796f025d8c937d8d56f97869cffa55c21d9edb07f5a3912/pylint-3.2.6-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
@@ -2245,14 +2245,14 @@ packages:
   sha256: 6f71d0bed6824875b521066571d612274f1d2dead3ede50f8fbdde1946ec0c40
 - kind: pypi
   name: pybullet-robot
-  version: 0.1.1
-  url: https://files.pythonhosted.org/packages/d6/d9/257919d55def214ffa7794aab1e1cd61443b6126759e053536929d74e37a/pybullet_robot-0.1.1-py3-none-any.whl
-  sha256: d670f18e3a1327baac3156dddd47ab9ad3cb6192cb077e1258dec3a5a88c9a3b
+  version: 0.1.4
+  url: https://files.pythonhosted.org/packages/4e/b4/f0d8724e59d79e469b8bfdce781e2e2d36cd6ebe51cbad852da587ce6296/pybullet_robot-0.1.4-py3-none-any.whl
+  sha256: 8448fff91f1ed27f0621de079d9704ef1be5dfe798e549b6c64943b0de754c49
   requires_dist:
-  - numpy
-  - pybullet>3.1
-  - robot-descriptions>=1.10.0
-  - scipy>=1.13.0,<2.0.0
+  - robot-descriptions<2,>=1.11.0
+  - numpy<3,>=1.6
+  - scipy<2,>=1.14.0
+  - pybullet<4,>=3.2.6
   requires_python: '>=3.10'
 - kind: conda
   name: pygame
@@ -2307,12 +2307,12 @@ packages:
   name: pyrcf
   version: 0.2.0
   path: .
-  sha256: e08235bb56791e429327ea9f065ae8d8ff1ffc57b105818656d7f7c9c67c73b1
+  sha256: e1d40705dc46f0517c0311239dd2a918c6313622bd2d58552e6b4bc813867be7
   requires_dist:
   - pybullet>=3.2.6,<4
   - numpy
-  - pybullet-robot>=0.1.1,<0.2
   - pin>=2.7.0,<3
+  - pybullet-robot>=0.1.4
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.6 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'

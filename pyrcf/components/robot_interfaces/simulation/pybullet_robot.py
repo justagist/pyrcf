@@ -2,7 +2,7 @@ import copy
 from typing import List, Mapping
 import numpy as np
 import pybullet_robot
-from pybullet_robot.utils.urdf_utils import get_urdf_from_awesome_robot_descriptions
+from pybullet_robot.utils.robot_loader_utils import get_urdf_from_awesome_robot_descriptions
 
 from .sim_robot_base import SimulatedRobotInterface
 from ....core.types import (
