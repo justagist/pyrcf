@@ -1,6 +1,6 @@
 from typing import Callable, Any, Tuple
 from functools import partial
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 
 from ....core.types import GlobalMotionPlan
@@ -97,8 +97,8 @@ class GamePadAnalogStickMappings:
 
 @dataclass
 class GamePadMappings:
-    button_mappings: GamePadButtonMappings = GamePadButtonMappings()
-    analog_mappings: GamePadAnalogStickMappings = GamePadAnalogStickMappings()
+    button_mappings: GamePadButtonMappings = field(default_factory=GamePadButtonMappings)
+    analog_mappings: GamePadAnalogStickMappings = field(default_factory=GamePadAnalogStickMappings)
 
 
 def toggle_mapping(

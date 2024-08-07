@@ -1624,9 +1624,9 @@ packages:
   requires_python: '>=3.8.0'
 - kind: pypi
   name: pyrcf
-  version: 0.0.1
+  version: 0.0.2
   path: .
-  sha256: 58c1ce39281ec730f5c726fe7812bc80ffc0fa312597572cb2564bb877693495
+  sha256: c15504b9901b9c0e3f45ac3e2aa50a36bd38f4fdb29aa711402e894df97a143c
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3
@@ -1642,6 +1642,7 @@ packages:
   - hypothesis>=6.82,<=6.108.5 ; extra == 'test'
   - ruff>=0.0.280,<=0.5.5 ; extra == 'test'
   - coverage>=7.2.7,<=7.6.0 ; extra == 'test'
+  requires_python: '>=3.10'
   editable: true
 - kind: pypi
   name: pytest

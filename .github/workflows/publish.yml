@@ -5,7 +5,7 @@ on: [push, workflow_dispatch]
 jobs:
   # Auto-publish when version is increased
   publish-job:
-    # Only publish on `publish` branch
+    # Only publish on `main` branch
     if: github.ref == 'refs/heads/publish'
     runs-on: ubuntu-latest
     environment: release
