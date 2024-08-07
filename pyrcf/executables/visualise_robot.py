@@ -79,3 +79,7 @@ def main():
         viz.run(sim_step_rate=240, slider_update_rate=10)
     except KeyboardInterrupt:
         viz.close()
+
+
+if __name__ == "__main__":
+    main()
