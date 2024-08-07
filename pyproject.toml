@@ -55,6 +55,7 @@ test = [
   "ruff>=0.0.280,<=0.5.5",
   "coverage>=7.2.7,<=7.6.0",
 ]
+docs = ["sphinxcontrib-napoleon", "sphinx-rtd-theme", "sphinx-autoapi"]
 
 [project.urls]
 Source = "https://github.com/justagist/pyrcf"
@@ -63,10 +64,11 @@ Home = "https://github.com/justagist/pyrcf"
 
 # Environments
 [tool.pixi.environments]
-default = { features = ["test"], solve-group = "default" }
+default = { features = ["test", "docs"], solve-group = "default" }
 py310 = ["py310", "test"]
 py311 = ["py311", "test"]
 py312 = ["py312", "test"]
+docs = ["py312", "docs"]
 devenv = { features = [
   "devenv",
 ], solve-group = "devenv", no-default-feature = true }
@@ -94,6 +96,7 @@ clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
 update-from-template-repo = "./setup_scripts/update_from_template.sh"
 view-coverage-html = "coverage html -d .htmlcov"
+generate-docs-html = "make -C docs/ html"
 
 
 [tool.pylint]
