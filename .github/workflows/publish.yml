@@ -6,7 +6,7 @@ jobs:
   # Auto-publish when version is increased
   publish-job:
     # Only publish on `main` branch
-    if: github.ref == 'refs/heads/publish'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: release
     permissions:  # Don't forget permissions
