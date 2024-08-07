@@ -8,6 +8,7 @@ jobs:
     # Only publish on `publish` branch
     if: github.ref == 'refs/heads/publish'
     runs-on: ubuntu-latest
+    environment: release
     permissions:  # Don't forget permissions
       contents: write
     steps:

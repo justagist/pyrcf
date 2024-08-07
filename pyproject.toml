@@ -1,31 +1,33 @@
 [project]
 name = "pyrcf"
-version = "0.2.0"
+version = "0.0.1"
 authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
 
-dependencies = ["pybullet>=3.2.6,<4", "numpy", "pin>=2.7.0,<3", "pybullet-robot>=0.1.4"]
+dependencies = [
+  "pybullet>=3.2.6,<4",
+  "pin>=2.7.0,<3",
+  "pybullet-robot>=0.1.4",
+  "yourdfpy>=0.0.56,<0.0.57",
+  "scipy>=1.14.0,<2",
+  "pygame>=2.6.0,<3",
+  "numpy>=1.26",
+]
 
 [tool.pixi.project]
 channels = ["conda-forge"]
 platforms = ["linux-64"]
 
 [tool.pixi.dependencies]
-python = ">=3.10,<3.11"
-nptyping = ">=2.5.0,<3"
-dataclasses = ">=0.8,<0.9"
-numpy = ">=1.6,<2.0"
-yourdfpy = ">=0.0.56,<0.0.57"
-scipy = ">=1.14.0,<2"
-pygame = ">=2.6.0,<3"
+python = ">=3.10"
 
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
-# [tool.pixi.feature.py311.dependencies]
-# python = "3.11.*"
-# [tool.pixi.feature.py312.dependencies]
-# python = "3.12.*"
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
 
 [tool.pixi.feature.devenv]
 dependencies = { python = "3.10" }
@@ -62,8 +64,8 @@ include = ["pyrcf"]
 [tool.pixi.environments]
 default = { features = ["test"], solve-group = "default" }
 py310 = ["py310", "test"]
-# py311 = ["py311", "test"]
-# py312 = ["py312", "test"]
+py311 = ["py311", "test"]
+py312 = ["py312", "test"]
 devenv = { features = [
   "devenv",
 ], solve-group = "devenv", no-default-feature = true }

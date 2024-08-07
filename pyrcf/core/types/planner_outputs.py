@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 from .tf_types import Twist, RelativePose
@@ -78,17 +78,17 @@ class GlobalMotionPlan:
     [r,p,y] = [0.0, 0.0, yaw_BF] in world
     """
 
-    twist: Twist = Twist()
+    twist: Twist = field(default_factory=Twist)
     """Twist in base/teleop frame of the robot"""
 
     # joint reference is not ideal in a global plan message; only left for directly sending
     # reference using joystick/gui (for testing new robots, or for controlling manipulator)
-    joint_references: JointStates = JointStates()
+    joint_references: JointStates = field(default_factory=JointStates)
     """Desired joint references. Typically a local planner would only fill joint position or
     velocity values, and not effort values."""
     # ee references is not ideal in a global plan message; only left for directly sending reference
     # using joystick/gui (for testing new robots, or for controlling manipulator)
-    end_effector_references: EndEffectorStates = EndEffectorStates()
+    end_effector_references: EndEffectorStates = field(default_factory=EndEffectorStates)
     """Desired end-effector pose (in global frame), contact states, contact forces etc. can be
     defined here."""
 
@@ -120,9 +120,8 @@ class LocalMotionPlan:
     This may have to be changed later if there is a need.
     """
 
-    relative_pose: RelativePose = (
-        None  # setting default value of identity is wrong (due to definition of teleop frame)
-    )
+    # setting default value of identity is wrong (due to definition of teleop frame)
+    relative_pose: RelativePose = None
     """Pose in teleop frame of the robot.
 
     Teleop frame is equivalent to robot (base) frame, but has the roll, pitch and height values
@@ -136,12 +135,12 @@ class LocalMotionPlan:
     -------
     NOTE: The frame used may have to be changed later. We may need to use this in the global frame.
     """
-    twist: Twist = Twist()
+    twist: Twist = field(default_factory=Twist)
     """Base velocity commands in the base frame."""
-    joint_references: JointStates = JointStates()
+    joint_references: JointStates = field(default_factory=JointStates)
     """Desired joint references. Typically a local planner would only fill joint position or
     velocity values, and not effort values."""
-    end_effector_references: EndEffectorStates = EndEffectorStates()
+    end_effector_references: EndEffectorStates = field(default_factory=EndEffectorStates)
     """Desired end-effector pose (in global frame), contact states, contact forces etc. can be
     defined here.
 

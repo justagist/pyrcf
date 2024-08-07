@@ -17,11 +17,6 @@ from ....core.types import GlobalMotionPlan, RobotState
 
 
 class UIBase(GlobalMotionPlannerBase):
-    class NotConnectedError(RuntimeError):
-        """Exception to be thrown when a UI interface could not be detected or was disconnected."""
-
-        def __init__(self, *args):
-            super().__init__(*args)
 
     @abstractmethod
     def process_user_input(

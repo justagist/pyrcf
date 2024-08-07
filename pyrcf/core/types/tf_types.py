@@ -19,22 +19,12 @@ class Pose3D:
         Defaults to False.
     """
 
-    position: Vector3D = np.zeros(3)
-    orientation: QuatType = np.array([0, 0, 0, 1])
+    position: Vector3D = field(default_factory=lambda: np.zeros(3))
+    orientation: QuatType = field(default_factory=lambda: np.array([0, 0, 0, 1]))
     """quaternion [x,y,z,w]"""
 
     validate_quaternion: bool = field(default=False, init=True, repr=False)
     """If this is enabled, quaternion validity will be checked after construction. Default False."""
-
-    def __post_init__(self):
-        self.__do_checks()
-
-    def __do_checks(self):
-        assert len(self.position) == 3, "Position dimension should be 3."
-        assert len(self.orientation) == 4, "Quaternion dimension should be 4."
-        if not self.validate_quaternion:
-            return
-        assert np.isclose(np.linalg.norm(self.orientation), 1.0), "Quaternion is not normalised."
 
     def __eq__(self, other: "Pose3D") -> bool:
         return np.allclose(self.position, other.position) and np.allclose(
@@ -42,15 +32,22 @@ class Pose3D:
         )
 
     def __setattr__(self, prop, val):
-        if prop not in ["position", "orientation", "validate_quaternion"]:
-            raise NameError(
-                f"Tried to assign value to illegal parameter {prop} in object of type "
-                f"{self.__class__.__name__}."
-            )
-        if prop != "validate_quaternion":
-            val = np.array(val)
-        super().__setattr__(prop, val)
-        self.__do_checks()
+        match prop:
+            case "position":
+                assert len(val) == 3, "Position dimension should be 3."
+            case "orientation":
+                assert len(val) == 4, "Quaternion dimension should be 4."
+                if self.validate_quaternion:
+                    assert np.isclose(np.linalg.norm(val), 1.0), "Quaternion is not normalised."
+            case "validate_quaternion":
+                super().__setattr__(prop, val)
+                return
+            case _:
+                raise NameError(
+                    f"Tried to assign value to illegal parameter {prop} in object of type "
+                    f"{self.__class__.__name__}."
+                )
+        super().__setattr__(prop, np.array(val))
 
 
 @dataclass
@@ -60,15 +57,8 @@ class Twist:
     This object also allows equality comparison (e.g. check for (`if twist1 == twist2:`)).
     """
 
-    linear: Vector3D = np.zeros(3)
-    angular: Vector3D = np.zeros(3)
-
-    def __post_init__(self):
-        self.__do_checks()
-
-    def __do_checks(self):
-        assert len(self.linear) == 3, "Linear velocity should be of dimension 3"
-        assert len(self.angular) == 3, "Angular velocity should be of dimension 3"
+    linear: Vector3D = field(default_factory=lambda: np.zeros(3))
+    angular: Vector3D = field(default_factory=lambda: np.zeros(3))
 
     def __eq__(self, other: "Twist") -> bool:
         return np.allclose(self.linear, other.linear) and np.allclose(self.angular, other.angular)
@@ -77,10 +67,10 @@ class Twist:
         if __name not in ["linear", "angular"]:
             raise NameError(
                 f"Tried to assign value to illegal parameter {__name} in object of type "
-                f" {self.__class__.__name__}."
+                f"{self.__class__.__name__}."
             )
+        assert len(__value) == 3, f"{__name} velocity should be of dimension 3"
         super().__setattr__(__name, np.array(__value))
-        self.__do_checks()
 
 
 @dataclass
@@ -91,16 +81,9 @@ class RelativePose:
     This object also allows equality comparison (e.g. check for (`if r_pose1 == r_pose2:`)).
     """
 
-    position: Vector3D = np.zeros(3)
-    rpy: Vector3D = np.zeros(3)
+    position: Vector3D = field(default_factory=lambda: np.zeros(3))
+    rpy: Vector3D = field(default_factory=lambda: np.zeros(3))
     """[Roll, Pitch, Yaw] in radians"""
-
-    def __post_init__(self):
-        self.__do_checks()
-
-    def __do_checks(self):
-        assert len(self.position) == 3, "Position should be of dimension 3"
-        assert len(self.rpy) == 3, "RPY should be of dimension 3"
 
     def __eq__(self, other: "RelativePose") -> bool:
         return np.allclose(self.position, other.position) and np.allclose(self.rpy, other.rpy)
@@ -111,5 +94,5 @@ class RelativePose:
                 f"Tried to assign value to illegal parameter {__name} in object of type "
                 f"{self.__class__.__name__}."
             )
+        assert len(__value) == 3, f"{__name} should be of dimension 3"
         super().__setattr__(__name, np.array(__value))
-        self.__do_checks()

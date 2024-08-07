@@ -1,7 +1,8 @@
 # Changelog
 
-## pyrcf
+## [0.0.1] - 2024-08-08
 
-## [0.0.0]
+### Adds
 
-
+- Initial working version of framework
+- Minimal dummy example of control loop

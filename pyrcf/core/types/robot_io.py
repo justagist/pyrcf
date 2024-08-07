@@ -364,11 +364,11 @@ class StateEstimates:
     NOTE: It might be worth making base state estimates into type FrameMotion.
     """
 
-    pose: Pose3D = Pose3D()
+    pose: Pose3D = field(default_factory=Pose3D)
     """Pose of the robot's base link in the world frame."""
-    twist: Twist = Twist()
+    twist: Twist = field(default_factory=Twist)
     """Velocity of the robot in the base frame; linear and angular."""
-    end_effector_states: EndEffectorStates = EndEffectorStates()
+    end_effector_states: EndEffectorStates = field(default_factory=EndEffectorStates)
     """State estimate data relating to end-effectors of this robot."""
 
     def extend(
@@ -419,9 +419,9 @@ class RobotState:
     All joint values should be in the order mentioned in joint_names.
     """
 
-    state_estimates: StateEstimates = StateEstimates()
+    state_estimates: StateEstimates = field(default_factory=StateEstimates)
     """State estimator output."""
-    joint_states: JointStates = JointStates()
+    joint_states: JointStates = field(default_factory=JointStates)
     """Proprioceptive data from the robot sensors/interfaces."""
 
     def extend(
@@ -491,7 +491,7 @@ class RobotCmd:
         Kd (np.ndarray)
     """
 
-    joint_commands: JointStates = JointStates()
+    joint_commands: JointStates = field(default_factory=JointStates)
     Kp: np.ndarray = None
     """Array of joint position gains for each joint (stiffness) in `joint_commands.joint_names`
     order."""
