@@ -2,6 +2,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
 [![GitHub release](https://img.shields.io/github/release/justagist/pyrcf.svg)](https://github.com/justagist/pyrcf/releases/)
+[![Documentation Status](https://readthedocs.org/projects/pyrcf/badge/?version=latest)](https://pyrcf.readthedocs.io/en/latest/?badge=latest)
 [![License](https://img.shields.io/pypi/l/bencher)](https://opensource.org/license/mit/)
 
 A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments.
@@ -94,4 +95,5 @@ More complex algorithms for control and planning will be provided by this packag
 
 Tutorials and more details about concepts will be provided soon in the [tutorials](examples/tutorials) folder.
 
+[![Documentation Status](https://readthedocs.org/projects/pyrcf/badge/?version=latest)](https://pyrcf.readthedocs.io/en/latest/?badge=latest)
 [![Pixi Badge](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json)](https://pixi.sh)

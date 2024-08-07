@@ -1830,7 +1830,7 @@ packages:
   name: pyrcf
   version: 0.0.4
   path: .
-  sha256: 3bba2a5ab04ef7891993cd9e5d5426842692ec73b74250991e0420a0e9e5e1d9
+  sha256: 99d59bb4deb6ff99fe7ba8d13db0d5303eb4eefeb8d6cc1fc442e35499043d5b
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3

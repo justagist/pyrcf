@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyrcf's documentation!
-===========================================
+Welcome to PyRCF documentation!
+===============================
+
+PyRCF is a Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments.
 
 .. toctree::
    :maxdepth: 3

@@ -61,7 +61,6 @@ docs = ["sphinxcontrib-napoleon", "sphinx-rtd-theme", "sphinx-autoapi"]
 Source = "https://github.com/justagist/pyrcf"
 Home = "https://github.com/justagist/pyrcf"
 
-
 # Environments
 [tool.pixi.environments]
 default = { features = ["test", "docs"], solve-group = "default" }
