@@ -1,6 +1,13 @@
 # Changelog
 
-## [0.0.3] - 2024-08-08
+## [0.0.4] - 2024-08-08
+
+### Adds
+
+- Example on using SimpleManagedCtrlLoop and core components
+- Improve docs and Readme
+
+## [0.0.3]
 
 ### Adds
 
@@ -11,7 +18,7 @@
 - Pypi installation issues
 - mutable defaults in dataclass fields
 
-## [0.0.1] - 2024-08-08
+## [0.0.1]
 
 ### Adds
 

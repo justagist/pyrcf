@@ -8,9 +8,11 @@ A typical control loop has these main components implemented from base classes:
     - GlobalMotionPlannerBase
 
 See README.md to know exactly what each of these components do in the context of the PyRCF
-framework.
+framework. Also see the docs in the base classes to understand the mandatory functions to
+be overridden when implementing these components (also see additional functions that can
+be overridden if required).
 
-This demo also demosntrates the contract between each components in the control loop.
+This demo also demonstrates the contract between each components in the control loop.
 Components are called in sequence in the control loop (no parallelisation -- see README
 in this folder (examples/tutorials/README.md)).
 
@@ -40,7 +42,10 @@ from pyrcf.components.global_planners import GlobalMotionPlannerBase
 from pyrcf.components.robot_interfaces import DummyRobot, RobotInterface
 from pyrcf.components.global_planners.ui_reference_generators import DummyUI
 
-# pylint: disable=W0621
+# pylint: disable=W0621, W0105
+
+"""NOTE: Read the docs in the __main__ below before going through the implementation
+of DummyCtrlLoop."""
 
 
 class DummyCtrlLoop:

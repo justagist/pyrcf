@@ -1624,9 +1624,9 @@ packages:
   requires_python: '>=3.8.0'
 - kind: pypi
   name: pyrcf
-  version: 0.0.3
+  version: 0.0.4
   path: .
-  sha256: 045ab7da061133eb6144bc54721b22305c34b8cab8cbdf07919628c168d42d85
+  sha256: 96fa6344dfc7b7e0b111a3b15c8a7e33117dde3640dbb0e223364ccd38ef3426
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3
