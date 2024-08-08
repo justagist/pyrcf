@@ -74,6 +74,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/50/de23fde84e45f5c4fda2488c759b69990fd4512387a8632860f3ac9cd225/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/03/88/0d189dce735ab16a3dca9193bb98529b9dfded28861c78d225966e4f74f9/numpy_quaternion-2023.0.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/55/77/40daddf677897a923d5d33329acd52a2144d54a9644f2a5422c028c6bf2d/pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -91,7 +92,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
@@ -217,6 +217,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/50/de23fde84e45f5c4fda2488c759b69990fd4512387a8632860f3ac9cd225/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/03/88/0d189dce735ab16a3dca9193bb98529b9dfded28861c78d225966e4f74f9/numpy_quaternion-2023.0.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/55/77/40daddf677897a923d5d33329acd52a2144d54a9644f2a5422c028c6bf2d/pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/21/c4/4a525cf89a155b2ccf7073806996d8d1667acb66706f497a7d097e481d31/pin-2.7.0-2-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -228,7 +229,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
@@ -328,6 +328,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4b/d7/ecf66c1cd12dc28b4040b15ab4d17b773b87fa9d29ca16125de01adb36cd/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/27/ec/3c5e96163048e81f7a4ffd73bec15c7e49fc8785002c4ffb7d91a418acf6/numpy_quaternion-2023.0.4-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b5/5b/6651c288b08df3b8c1e2f8c1152201e0b25d240e22ddade0f1e242fc9fa0/pillow-10.4.0-cp310-cp310-manylinux_2_28_x86_64.whl
@@ -342,7 +343,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4a/6d/1166a157b227f2333f8e8ae320b6b7ea2a6a38fbe7a3563ad76dffc8608d/rpds_py-0.20.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -433,6 +433,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/3a/d0/edc009c27b406c4f9cbc79274d6e46d634d139075492ad055e3d68445925/numpy-1.26.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/be/47/2fe04e3a2b6f1e6d155cb531e49093742f3647fb94428e6808d8bcaa95c9/numpy_quaternion-2023.0.4-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ba/e5/8c68ff608a4203085158cff5cc2a3c534ec384536d9438c405ed6370d080/pillow-10.4.0-cp311-cp311-manylinux_2_28_x86_64.whl
@@ -447,7 +448,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a7/e8/85835077b782555d6b3416874b702ea6ebd7db1f145283c9252968670dd5/rpds_py-0.20.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -536,6 +536,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/2a/e2/5d3f6ada4297caebe1a2add3b126fe800c96f56dbe5d1988a2cbe0b267aa/mypy_extensions-1.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/38/e9/5f72929373e1a0e8d142a130f3f97e6ff920070f87f91c4e13e40e0fba5a/networkx-3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/50/de23fde84e45f5c4fda2488c759b69990fd4512387a8632860f3ac9cd225/numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/03/88/0d189dce735ab16a3dca9193bb98529b9dfded28861c78d225966e4f74f9/numpy_quaternion-2023.0.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/55/77/40daddf677897a923d5d33329acd52a2144d54a9644f2a5422c028c6bf2d/pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl
@@ -550,7 +551,6 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/f7/a59a673594e6c2ff2dbc44b00fd4ecdec2fc399bb6a7bd82d612699a0121/rpds_py-0.20.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -1572,6 +1572,54 @@ packages:
   url: https://files.pythonhosted.org/packages/4b/d7/ecf66c1cd12dc28b4040b15ab4d17b773b87fa9d29ca16125de01adb36cd/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: ffa75af20b44f8dba823498024771d5ac50620e6915abac414251bd971b4529f
   requires_python: '>=3.9'
+- kind: pypi
+  name: numpy-quaternion
+  version: 2023.0.4
+  url: https://files.pythonhosted.org/packages/03/88/0d189dce735ab16a3dca9193bb98529b9dfded28861c78d225966e4f74f9/numpy_quaternion-2023.0.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 7f764215c381c2b9d03706023a2a2971fa802af9c2f1c54bfe23cdfe5053c14a
+  requires_dist:
+  - numpy<2.0,>=1.13
+  - mkdocs ; extra == 'docs'
+  - mktheapidocs[plugin] ; extra == 'docs'
+  - pymdown-extensions ; extra == 'docs'
+  - numba<0.49.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - llvmlite<0.32.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - numba ; (python_version >= '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - scipy ; extra == 'scipy'
+  - pytest ; extra == 'testing'
+  - pytest-cov ; extra == 'testing'
+- kind: pypi
+  name: numpy-quaternion
+  version: 2023.0.4
+  url: https://files.pythonhosted.org/packages/27/ec/3c5e96163048e81f7a4ffd73bec15c7e49fc8785002c4ffb7d91a418acf6/numpy_quaternion-2023.0.4-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: e90fcf750786ea3e55e33e52e5e2baac334a1102a8719b2d06cff71a96b34c3c
+  requires_dist:
+  - numpy<2.0,>=1.13
+  - mkdocs ; extra == 'docs'
+  - mktheapidocs[plugin] ; extra == 'docs'
+  - pymdown-extensions ; extra == 'docs'
+  - numba<0.49.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - llvmlite<0.32.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - numba ; (python_version >= '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - scipy ; extra == 'scipy'
+  - pytest ; extra == 'testing'
+  - pytest-cov ; extra == 'testing'
+- kind: pypi
+  name: numpy-quaternion
+  version: 2023.0.4
+  url: https://files.pythonhosted.org/packages/be/47/2fe04e3a2b6f1e6d155cb531e49093742f3647fb94428e6808d8bcaa95c9/numpy_quaternion-2023.0.4-cp311-cp311-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: cc68674de1090f2000dce84c5a807294e286136accb2509a8df205e479a79bcd
+  requires_dist:
+  - numpy<2.0,>=1.13
+  - mkdocs ; extra == 'docs'
+  - mktheapidocs[plugin] ; extra == 'docs'
+  - pymdown-extensions ; extra == 'docs'
+  - numba<0.49.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - llvmlite<0.32.0 ; (python_version < '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - numba ; (python_version >= '3.6' and platform_python_implementation != 'PyPy') and extra == 'numba'
+  - scipy ; extra == 'scipy'
+  - pytest ; extra == 'testing'
+  - pytest-cov ; extra == 'testing'
 - kind: conda
   name: openssl
   version: 3.3.1
@@ -1845,7 +1893,7 @@ packages:
   name: pyrcf
   version: 0.0.4
   path: .
-  sha256: 71960f07931672a4f434e82114cbc00044e511ecea96184abd79a87761a4627b
+  sha256: d6d4c5e56598b2ffbde859b0447ede8a33c4425bb3704fdf5ee4be8532aa804a
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3
@@ -1854,8 +1902,8 @@ packages:
   - scipy>=1.14.0,<2
   - pygame>=2.6.0,<3
   - numpy>=1.26
-  - quaternion>=3.5.2.post4,<4
   - inputs>=0.5,<0.6
+  - numpy-quaternion>=2023.0.4,<2024
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.6 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
@@ -2038,13 +2086,6 @@ packages:
   url: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 80bab7bfc629882493af4aa31a4cfa43a4c57c83813253626916b8c7ada83476
   requires_python: '>=3.8'
-- kind: pypi
-  name: quaternion
-  version: 3.5.2.post4
-  url: https://files.pythonhosted.org/packages/d2/97/c107954e8006772c82c23e0557d710be4578f4f58ebfbd6cd4dbc8a81c6a/Quaternion-3.5.2.post4-py3-none-any.whl
-  sha256: e1e2b050a5c4f0bb85c039fc5071678810f540cb2a064ee2b82fd824bb87b3e3
-  requires_dist:
-  - numpy
 - kind: conda
   name: readline
   version: '8.2'
