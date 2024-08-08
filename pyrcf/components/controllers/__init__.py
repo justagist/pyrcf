@@ -2,3 +2,4 @@
 
 from .controller_base import ControllerBase, DummyController
 from .joint_pd_controller import JointPDController
+from .gravity_compensated_joint_pd_controller import GravityCompensatedPDController
