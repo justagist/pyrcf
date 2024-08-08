@@ -92,6 +92,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d6/e3/38137cd781527f91db4def5cb798a5d31d2ed2887362c997fdeaf9e3b59f/pyzmq-26.1.0-cp312-cp312-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
@@ -126,6 +127,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a9/41/8f116ada3fa614e2554d462c2367604715d55bc0ddbb87d62af3bb81eadc/xatlas-0.0.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ce/d4/8111e14273c0781349af8d0dae55c4e42c7196e7237e81a3db5186ab7dfe/xxhash-3.4.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a5/a3/b182c56518f208e3b10a979a24dbe7348fc39edf19e6271b6cf5f8988c96/yourdfpy-0.0.56-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
       - pypi: .
   devenv:
     channels:
@@ -229,6 +231,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+      - pypi: https://files.pythonhosted.org/packages/d6/e3/38137cd781527f91db4def5cb798a5d31d2ed2887362c997fdeaf9e3b59f/pyzmq-26.1.0-cp312-cp312-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f9/9b/335f9764261e915ed497fcdeb11df5dfd6f7bf257d4a6a2a686d80da4d54/requests-2.32.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
@@ -260,6 +263,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a9/41/8f116ada3fa614e2554d462c2367604715d55bc0ddbb87d62af3bb81eadc/xatlas-0.0.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ce/d4/8111e14273c0781349af8d0dae55c4e42c7196e7237e81a3db5186ab7dfe/xxhash-3.4.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a5/a3/b182c56518f208e3b10a979a24dbe7348fc39edf19e6271b6cf5f8988c96/yourdfpy-0.0.56-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
       - pypi: .
   py310:
     channels:
@@ -343,6 +347,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/4a/f2/633999c1dcc7e7c0536ac990390a6a3e49295724dbf450c42ea730daadd9/pyzmq-26.1.0-cp310-cp310-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/4a/6d/1166a157b227f2333f8e8ae320b6b7ea2a6a38fbe7a3563ad76dffc8608d/rpds_py-0.20.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -365,6 +370,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/29/ee/086c7cb4f067238e55fd645188232d67afe1ac6adacbea7a8cf2c6346cd8/xatlas-0.0.9-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/80/8a/1dd41557883b6196f8f092011a5c1f72d4d44cf36d7b67d4a5efe3127949/xxhash-3.4.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a5/a3/b182c56518f208e3b10a979a24dbe7348fc39edf19e6271b6cf5f8988c96/yourdfpy-0.0.56-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
       - pypi: .
   py311:
     channels:
@@ -448,6 +454,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/98/51/acb359a48f0431acc1b5f6da7ab952e7e18a2783f45e05247283330aba20/pyzmq-26.1.0-cp311-cp311-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/a7/e8/85835077b782555d6b3416874b702ea6ebd7db1f145283c9252968670dd5/rpds_py-0.20.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -468,6 +475,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/3b/8e/bf91f0232a799d4291e732c653758204244ea190511f9c4f828abb11da46/xatlas-0.0.9-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/eb/3a/25c4aecb61a49d4415fd71d4f66a8a5b558dd44a52d7054ea9aa59ccbac1/xxhash-3.4.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a5/a3/b182c56518f208e3b10a979a24dbe7348fc39edf19e6271b6cf5f8988c96/yourdfpy-0.0.56-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
       - pypi: .
   py312:
     channels:
@@ -551,6 +559,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0f/f9/cf155cf32ca7d6fa3601bc4c5dd19086af4b320b706919d48a4c79081cf9/pytest-8.3.2-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/78/3a/af5b4fa5961d9a1e6237b530eb87dd04aea6eb83da09d2a4073d81b54ccf/pytest_cov-5.0.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/d6/e3/38137cd781527f91db4def5cb798a5d31d2ed2887362c997fdeaf9e3b59f/pyzmq-26.1.0-cp312-cp312-manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/b7/59/2056f61236782a2c86b33906c025d4f4a0b17be0161b63b70fd9e8775d36/referencing-0.35.1-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/f3/94/5ce4c471f79a516492dda65d81e1864cdc1378eebd0e7ae0bdc871a12e91/robot_descriptions-1.11.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/0f/f7/a59a673594e6c2ff2dbc44b00fd4ecdec2fc399bb6a7bd82d612699a0121/rpds_py-0.20.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
@@ -571,6 +580,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/a9/41/8f116ada3fa614e2554d462c2367604715d55bc0ddbb87d62af3bb81eadc/xatlas-0.0.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/ce/d4/8111e14273c0781349af8d0dae55c4e42c7196e7237e81a3db5186ab7dfe/xxhash-3.4.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/a5/a3/b182c56518f208e3b10a979a24dbe7348fc39edf19e6271b6cf5f8988c96/yourdfpy-0.0.56-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
       - pypi: .
 packages:
 - kind: conda
@@ -1893,17 +1903,18 @@ packages:
   name: pyrcf
   version: 0.0.4
   path: .
-  sha256: d6d4c5e56598b2ffbde859b0447ede8a33c4425bb3704fdf5ee4be8532aa804a
+  sha256: e1e09cffa6980911a00d9820f15a951701badb3120f09d859717591e5ab692a3
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3
   - pybullet-robot>=0.1.4
-  - yourdfpy>=0.0.56,<0.0.57
+  - yourdfpy>=0.0.56
   - scipy>=1.14.0,<2
   - pygame>=2.6.0,<3
   - numpy>=1.26
-  - inputs>=0.5,<0.6
-  - numpy-quaternion>=2023.0.4,<2024
+  - inputs>=0.5
+  - numpy-quaternion>=2023.0.4
+  - zmq>=0.0.0
   - black>=23,<=24.4.2 ; extra == 'test'
   - pylint>=2.17.7,<=3.2.6 ; extra == 'test'
   - pytest-cov>=4.1,<=5.0.0 ; extra == 'test'
@@ -2086,6 +2097,30 @@ packages:
   url: https://files.pythonhosted.org/packages/b9/2b/614b4752f2e127db5cc206abc23a8c19678e92b23c3db30fc86ab731d3bd/PyYAML-6.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   sha256: 80bab7bfc629882493af4aa31a4cfa43a4c57c83813253626916b8c7ada83476
   requires_python: '>=3.8'
+- kind: pypi
+  name: pyzmq
+  version: 26.1.0
+  url: https://files.pythonhosted.org/packages/4a/f2/633999c1dcc7e7c0536ac990390a6a3e49295724dbf450c42ea730daadd9/pyzmq-26.1.0-cp310-cp310-manylinux_2_28_x86_64.whl
+  sha256: 77ce6a332c7e362cb59b63f5edf730e83590d0ab4e59c2aa5bd79419a42e3449
+  requires_dist:
+  - cffi ; implementation_name == 'pypy'
+  requires_python: '>=3.7'
+- kind: pypi
+  name: pyzmq
+  version: 26.1.0
+  url: https://files.pythonhosted.org/packages/98/51/acb359a48f0431acc1b5f6da7ab952e7e18a2783f45e05247283330aba20/pyzmq-26.1.0-cp311-cp311-manylinux_2_28_x86_64.whl
+  sha256: ce6f2b66799971cbae5d6547acefa7231458289e0ad481d0be0740535da38d8b
+  requires_dist:
+  - cffi ; implementation_name == 'pypy'
+  requires_python: '>=3.7'
+- kind: pypi
+  name: pyzmq
+  version: 26.1.0
+  url: https://files.pythonhosted.org/packages/d6/e3/38137cd781527f91db4def5cb798a5d31d2ed2887362c997fdeaf9e3b59f/pyzmq-26.1.0-cp312-cp312-manylinux_2_28_x86_64.whl
+  sha256: d4fafc2eb5d83f4647331267808c7e0c5722c25a729a614dc2b90479cafa78bd
+  requires_dist:
+  - cffi ; implementation_name == 'pypy'
+  requires_python: '>=3.7'
 - kind: conda
   name: readline
   version: '8.2'
@@ -2841,3 +2876,10 @@ packages:
   - pytest ; extra == 'testing'
   - pytest-cov ; extra == 'testing'
   requires_python: '>=3.7'
+- kind: pypi
+  name: zmq
+  version: 0.0.0
+  url: https://files.pythonhosted.org/packages/6e/78/833b2808793c1619835edb1a4e17a023d5d625f4f97ff25ffff986d1f472/zmq-0.0.0.tar.gz
+  sha256: 6b1a1de53338646e8c8405803cffb659e8eb7bb02fff4c9be62a7acfac8370c9
+  requires_dist:
+  - pyzmq
