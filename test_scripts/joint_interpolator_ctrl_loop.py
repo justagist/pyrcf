@@ -17,6 +17,9 @@ to smoothly reach the joint targets from the GUI sliders.
 
 5. Extension of this controller that also adds gravity compensation torques to the
 robot command, making the joint tracking much better.
+
+6. There is also a debug robot in the simulation (using `PybulletRobotPlanDebugger`)
+that shows the actual output from the planner (useful for controller tuning/debugging).
 """
 
 from pyrcf.components.robot_interfaces.simulation import PybulletRobot
@@ -26,13 +29,20 @@ from pyrcf.components.global_planners.ui_reference_generators import (
     PybulletGUIGlobalPlannerInterface,
 )
 from pyrcf.components.controllers import JointPDController, GravityCompensatedPDController
+from pyrcf.components.ctrl_loop_debuggers import (
+    PlotjugglerLoopDebugger,
+    PybulletRobotPlanDebugger,
+)
 
 # pylint: disable=W0212
 
-USE_GRAVITY_COMP_CONTROLLER: bool = True
+USE_GRAVITY_COMP_CONTROLLER: bool = False
 """Set this flag to True to use a PD controller with gravity compensation.
 If set to False, will use a regular PD joint position tracking controller.
 Try enabling and disabling to see difference in tracking."""
+
+SHOW_PLANNED_PATH: bool = True
+"""Flag to enable/disable debug robot in pybullet that shows the local plan output."""
 
 if __name__ == "__main__":
     # load a manipulator robot from AwesomeRobotDescriptions (can load any robot
@@ -81,11 +91,20 @@ if __name__ == "__main__":
     )
 
     ctrl_loop_rate: float = 240  # 240hz control loop
-
+    debuggers = [PlotjugglerLoopDebugger(rate=None)]
+    if SHOW_PLANNED_PATH:
+        debuggers.append(
+            # this debugger can be used to visualise the planner output that the
+            # controller is trying to track
+            PybulletRobotPlanDebugger(urdf_path=robot._sim_robot.urdf_path, rate=30)
+        )
     try:
         control_loop.run(
             loop_rate=ctrl_loop_rate,
             clock=robot.get_sim_clock(),
+            # PlotjugglerLoopDebugger will publish all data from control loop
+            # to plotjuggler
+            debuggers=debuggers,
         )
     except KeyboardInterrupt:
         print("Closing control loop")
