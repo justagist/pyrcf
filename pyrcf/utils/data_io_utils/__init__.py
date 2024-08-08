@@ -5,3 +5,4 @@ from .pyrcf_publisher import (
     DEFAULT_ZMQ_PUBLISH_PORT,
 )
 from .pyrcf_subscriber import PyRCFSubscriberBase, PyRCFSubscriberZMQ
+from .recorded_data_parser import ComponentDataRecorderDataParser

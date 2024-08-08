@@ -2,3 +2,4 @@
 can be used in the control loop."""
 
 from .ctrl_loop_debugger_base import CtrlLoopDebuggerBase, DummyDebugger
+from .data_recorder_debugger import ComponentDataRecorderDebugger
