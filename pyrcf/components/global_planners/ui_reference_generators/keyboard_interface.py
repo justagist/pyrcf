@@ -35,8 +35,8 @@ def blit_multiline_text(surface, text, pos, font, line_spacing=3, color=pygame.C
         y += word_height + line_spacing  # Start on new row
 
 
-class KeyboardInterface(UIBase):
-    """A simple keyboard interface following the GlobalMotionPlanner protocol."""
+class KeyboardGlobalPlannerInterface(UIBase):
+    """A simple keyboard interface inheriting from the GlobalMotionPlanner format."""
 
     def __init__(
         self,
@@ -46,7 +46,7 @@ class KeyboardInterface(UIBase):
         parallel_mode: bool = False,
         verbose: bool = False,
     ) -> None:
-        """A simple keyboard interface following the GlobalMotionPlanner protocol.
+        """A simple keyboard interface inheriting from the GlobalMotionPlanner format.
 
         This class allows using keybindings to update a global motion plan from user keyboard input.
         The modified global motion plan object can then be retrieved when generate_global_plan

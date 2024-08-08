@@ -2,7 +2,7 @@ from pyrcf.components.robot_interfaces import DummyRobot
 from pyrcf.components.agents import PlannerControllerAgent
 from pyrcf.components.state_estimators import DummyStateEstimator
 from pyrcf.components.controller_manager import SimpleControllerManager
-from pyrcf.components.global_planners.ui_reference_generators import KeyboardInterface
+from pyrcf.components.global_planners.ui_reference_generators import KeyboardGlobalPlannerInterface
 from pyrcf.components.global_planners import GlobalMotionPlannerBase
 from pyrcf.components.controllers import DummyController
 from pyrcf.components.local_planners import DummyLocalPlanner
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     state_estimator = DummyStateEstimator()
     controller = DummyController()
     local_planner = DummyLocalPlanner()
-    global_planner = KeyboardInterface()
+    global_planner = KeyboardGlobalPlannerInterface()
 
     # create a controller manager to manage the controllers in the control loop. This is to
     # deal with cases where there are multiple controllers in the control loop. In our case
