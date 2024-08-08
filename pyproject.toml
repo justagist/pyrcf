@@ -12,7 +12,7 @@ dependencies = [
   "yourdfpy>=0.0.56,<0.0.57",
   "scipy>=1.14.0,<2",
   "pygame>=2.6.0,<3",
-  "numpy>=1.26",
+  "numpy>=1.26", "quaternion>=3.5.2.post4,<4",
 ]
 
 [build-system]
