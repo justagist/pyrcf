@@ -97,7 +97,7 @@ def get_relative_pose_between_vectors(
 
 
 class PoseTrasfrom:
-    """Transform a pose (point and orientation) between LMCF coordinate frames."""
+    """Transform a pose (point and orientation) between PyRCF coordinate frames."""
 
     @staticmethod
     def TELEOP_FRAME_POSE_IN_WORLD(
