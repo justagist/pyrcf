@@ -1,4 +1,4 @@
-"""Simple demo showing the use of awesome robots loader, joint position controller,
+"""Simple demo showing the use of some implmentations of pyrcf components joint position controller,
 end-effector reference interpolator (local planner), and pybullet GUI for setting target
 end-effector poses (implemented as a GlobalPlanner).
 
@@ -15,7 +15,7 @@ the GUI sliders. IK is solved using the `PybulletIKInterface`.
 
 4. The controller is a joint position (and velocity) tracking controller.
 
-5. Extension of this controller that also adds gravity compensation torques to the
+5. Also has an extended variant of this controller that adds gravity compensation torques to the
 robot command, making the joint tracking much better.
 
 6. There is also a debug robot in the simulation (using `PybulletRobotPlanDebugger`)

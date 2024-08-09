@@ -20,13 +20,15 @@ if __name__ == "__main__":
     # control loop.
     robot = DummyRobot()
     state_estimator = DummyStateEstimator()
-    controller = DummyController()
-    local_planner = DummyLocalPlanner()
     global_planner = DummyUI()
+    local_planner = DummyLocalPlanner()
+    controller = DummyController()
 
     # create a controller manager to manage the controllers in the control loop. This is to
-    # deal with cases where there are multiple controllers in the control loop. In our case
-    # we don't necessarily need it, but this is required for creating the ControlLoop object.
+    # deal with cases where there are multiple controllers/localplanners in the control loop.
+    #  In our case, we only have one controller and local planner in this example and we don't
+    # necessarily need a controller manager, but this is the format expected by the
+    # SimpleManagedCtrlLoop class we use in this example.
     controller_manager = SimpleControllerManager()
 
     # the simple controller manager manages different 'agents'. In our case, our 'agent' is

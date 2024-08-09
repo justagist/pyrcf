@@ -5,3 +5,4 @@ from .ui_base import UIBase, DummyUI
 from .keyboard_interface import KeyboardGlobalPlannerInterface
 from .pb_gui_iinterface import PybulletGUIGlobalPlannerInterface
 from .joystick_interface import JoystickGlobalPlannerInterface
+from .key_mappings import DEFAULT_GAMEPAD_MAPPINGS, DEFAULT_KEYBOARD_MAPPING
