@@ -61,7 +61,7 @@ from pyrcf.components.ctrl_loop_debuggers import PlotjugglerLoopDebugger, Pybull
 
 # pylint: disable=W0212
 
-USE_GRAVITY_COMP_CONTROLLER: bool = True
+USE_GRAVITY_COMP_CONTROLLER: bool = False
 """Set this flag to True to use a PD controller with gravity compensation.
 If set to False, will use a regular PD joint position tracking controller.
 Try enabling and disabling to see difference in tracking."""

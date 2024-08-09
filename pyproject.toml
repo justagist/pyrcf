@@ -1,6 +1,6 @@
 [project]
 name = "pyrcf"
-version = "0.0.4"
+version = "0.0.5"
 authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
