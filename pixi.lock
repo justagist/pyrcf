@@ -1919,9 +1919,9 @@ packages:
   requires_python: '>=3.8.0'
 - kind: pypi
   name: pyrcf
-  version: 0.0.5
+  version: 0.0.6
   path: .
-  sha256: 514993a411e6f844f6a79620fcb455f2ecde29aced130c16f0a0f5ee8681fc30
+  sha256: 86d33a51abbd9146c6e611df6b3ab66b266c2ed63bc17efb8c27a4eed69cb04b
   requires_dist:
   - pybullet>=3.2.6,<4
   - pin>=2.7.0,<3

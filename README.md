@@ -63,15 +63,15 @@ All the demos shown below are available in the `examples` folder of this repo.
 
 ### Testing and developing a balancing controller for 2-wheeled segway type robot (upkie)
 
-[![upkie-2024-08-09-20-22-42.gif](https://i.postimg.cc/g0VyKnFq/upkie-2024-08-09-20-22-42.gif)](https://postimg.cc/2q5Bkj5V)
+[![upkie-2024-08-09-20-22-42.gif](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/upkie-2024-08-09_20.22.42.gif)](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/upkie-2024-08-09_20.22.42.gif)
 
 ### Implementing joint interpolator and joint tracking controllers for different robots (with debugging visualisers)
 
-[![joint-pos-ctrlr-2024-08-09-20-21-15-2.gif](https://i.postimg.cc/Z5VVdw3F/joint-pos-ctrlr-2024-08-09-20-21-15-2.gif)](https://postimg.cc/LJgtdBxn)
+[![joint-pos-ctrlr-2024-08-09-20-21-15-2.gif](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/joint_pos_ctrlr-2024-08-09_20.21.15%20(1).gif)](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/joint_pos_ctrlr-2024-08-09_20.21.15%20(1).gif)
 
 ### Supports data monitoring tools like Plotjuggler to debug and assess any component easily
 
-[![ik-with-pj-2024-08-09-20-19-54-1.gif](https://i.postimg.cc/s2dbT61F/ik-with-pj-2024-08-09-20-19-54-1.gif)](https://postimg.cc/5XgP0mwp)
+[![ik-with-pj-2024-08-09-20-19-54-1.gif](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/ik_with_pj-2024-08-09_20.19.54%20(1).gif)](https://media.githubusercontent.com/media/justagist/_assets/main/pyrcf/ik_with_pj-2024-08-09_20.19.54%20(1).gif)
 
 NOTE: Plotjuggler has to be installed separately if it is needed (see <https://github.com/facontidavide/PlotJuggler> for installation instructions).
 
