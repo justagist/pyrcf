@@ -17,7 +17,7 @@ from ...core.types import (
 )
 from ...utils.time_utils import ClockBase, PythonPerfClock
 from ...utils.sim_utils.pybullet_debug_robot import PybulletDebugRobot
-from ...components.callback_handlers.pb_gui_utils import PybulletGUIButton, PybulletDebugFrameViz
+from ...utils.gui_utils.pb_gui_utils import PybulletGUIButton, PybulletDebugFrameViz
 from ...utils.frame_transforms import PoseTrasfrom
 from ...utils.math_utils import rpy2quat
 from ...components.robot_interfaces.simulation.pybullet_robot import PybulletRobot

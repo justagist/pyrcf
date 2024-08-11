@@ -3,7 +3,7 @@ from typing import Tuple, List, Callable, TypeAlias
 import numpy as np
 
 from .base_callbacks import CustomCallbackBase
-from .pb_gui_utils import (
+from ...utils.gui_utils.pb_gui_utils import (
     PybulletGUISlider,
     PybulletGUIButton,
     PybulletDebugFrameViz,

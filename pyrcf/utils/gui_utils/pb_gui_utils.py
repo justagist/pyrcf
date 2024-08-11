@@ -2,8 +2,8 @@ from typing import Tuple, Callable, TypeAlias, List
 import pybullet as pb
 import numpy as np
 
-from ...utils.time_utils import RateTrigger, PythonPerfClock
-from ...utils.math_utils import quat2rot
+from ..time_utils import RateTrigger, PythonPerfClock
+from ..math_utils import quat2rot
 
 QuatType: TypeAlias = np.ndarray
 """Numpy array representating quaternion in format [x,y,z,w]"""

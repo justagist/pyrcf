@@ -4,7 +4,7 @@ from .ctrl_loop_debugger_base import CtrlLoopDebuggerBase
 from ...core.types import GlobalMotionPlan, LocalMotionPlan, RobotCmd, RobotState
 from ...utils.time_utils import ClockBase, PythonPerfClock
 from ...utils.sim_utils.pybullet_debug_robot import PybulletDebugRobot
-from ...components.callback_handlers.pb_gui_utils import PybulletGUIButton
+from ...utils.gui_utils.pb_gui_utils import PybulletGUIButton
 from ...components.robot_interfaces.simulation.pybullet_robot import PybulletRobot
 
 

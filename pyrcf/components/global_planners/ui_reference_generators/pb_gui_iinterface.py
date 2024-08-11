@@ -17,7 +17,7 @@ from ....core.types import (
     Vector3D,
     QuatType,
 )
-from ...callback_handlers.pb_gui_utils import PybulletGUIButton
+from ....utils.gui_utils.pb_gui_utils import PybulletGUIButton
 from ...callback_handlers.pb_gui_callbacks import (
     PbMultiGUISliderSingleCallback,
     PbGUIButtonCallback,
