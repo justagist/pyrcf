@@ -16,24 +16,41 @@ from ...core.types import (
 )
 
 
-class IKReferenceInterpolator(LocalPlannerBase):
-    """Solves IK for given end-effector reference and interpolates joint references."""
+class PybulletIKReferenceInterpolator(LocalPlannerBase):
+    """Solves IK using PybulletIKInterface for given end-effector reference and interpolates joint references."""
 
     def __init__(
         self,
-        pybullet_ik_interface: PybulletIKInterface,
+        urdf_path: str,
+        floating_base: bool = False,
+        starting_base_position: Vector3D = np.zeros(3),
+        starting_base_orientation: QuatType = np.array([0, 0, 0, 1]),
+        starting_joint_positions: List[float] = None,
+        joint_names_order: List[str] = None,
         filter_gain=0.05,
         blind_mode: bool = True,
         ee_names: List[str] = None,
         max_constraint_force: float = 10000,
         solver_erp: float = None,
+        **pb_ik_kwargs,
     ):
         """A "local planner" that simply solves IK for given end-effector reference
-        and interpolates joint references to achieve the target EE pose.
+        and interpolates joint references to achieve the target EE pose. Uses
+        PybulletIKInterface from pybullet_robot package to solve IK.
 
         Args:
-            pybullet_ik_interface (PybulletIKInterface): Pre-defined PybulletIKInterface
-                object that can be used for solving IK for this robot.
+            urdf_path (str): Path to urdf of the robot.
+            floating_base (bool, optional): Whether the robot has fixed base or floating base.
+                Defaults to False.
+            starting_base_position (Vector3D, optional): Starting base position of the robot.
+                Defaults to np.zeros(3).
+            starting_base_orientation (QuatType, optional): Starting base orientation of the robot.
+                Defaults to np.array([0, 0, 0, 1]).
+            starting_joint_positions (List[float], optional): Starting joint positions of the
+                robot. Defaults to None.
+            joint_names_order (List[str], optional): Order of joint names to be used. This will be
+                the order of the output of the IK as well. Defaults to None (use default order from
+                BulletRobot instance when loading this urdf).
             filter_gain (float, optional): Smoothing gain for second-order filter
                 interpolator. Defaults to 0.05.
             blind_mode (bool, optional): If set to False, will not use joint state
@@ -46,8 +63,18 @@ class IKReferenceInterpolator(LocalPlannerBase):
                 to pull the link. Defaults to 10000 (setting `None` will use pybullet default).
             solver_erp (float, optional): Error reduction parameter for this constraint. Defaults
                 to None (use pybullet default).
+            **pb_ik_kwargs (optional): Additional keywork arguments to be used while creating the
+                PybulletIKInterface object.
         """
-        self._pb_ik = pybullet_ik_interface
+        self._pb_ik = PybulletIKInterface(
+            urdf_path=urdf_path,
+            floating_base=floating_base,
+            starting_base_position=starting_base_position,
+            starting_base_orientation=starting_base_orientation,
+            starting_joint_positions=starting_joint_positions,
+            joint_names_order=joint_names_order,
+            **pb_ik_kwargs,
+        )
         self._alpha = filter_gain
         self._blind_mode = blind_mode
         self._max_force = max_constraint_force

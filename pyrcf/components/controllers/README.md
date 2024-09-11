@@ -25,7 +25,7 @@ Joint PD controller for joint position and velocity tracking.
 
 - Compatible LocalPlanner Classes:
   - `JointReferenceInterpolator`
-  - `IKReferenceInterpolator`
+  - `PybulletIKReferenceInterpolator`
   - `BlindForwardingPlanner` (if applicable)
 
 ### `GravityCompensatedPDController`
@@ -50,5 +50,5 @@ Joint PD controller for joint position and velocity tracking with active gravity
 
 - Compatible LocalPlanner Classes:
   - `JointReferenceInterpolator`
-  - `IKReferenceInterpolator`
+  - `PybulletIKReferenceInterpolator`
   - `BlindForwardingPlanner` (if applicable)

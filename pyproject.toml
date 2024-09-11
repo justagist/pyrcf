@@ -4,6 +4,13 @@ version = "0.0.6"
 authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
+keywords = [
+  "python robot control framework",
+  "robotics",
+  "control framework",
+  "legged robot",
+  "motion planner",
+]
 requires-python = ">= 3.10"
 dependencies = [
   "pybullet>=3.2.6,<4",
@@ -15,7 +22,7 @@ dependencies = [
   "numpy>=1.26",
   "inputs>=0.5",
   "numpy-quaternion>=2023.0.4",
-  "zmq>=0.0.0", "tk",
+  "zmq>=0.0.0",
 ]
 
 [build-system]

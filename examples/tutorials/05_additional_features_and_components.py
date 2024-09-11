@@ -25,7 +25,7 @@ commands.
 ** Loop debuggers **
 Control Loop Debuggers are components that can intercept and read data passed by
 the components in the control loop. These components read data (WILL/SHOULD NOT modify)
-and can be used for visualising/debugging etc. 
+and can be used for visualising/debugging etc.
 
 
 6. There are two debuggers used in this example: the `PlotjugglerLoopDebugger`
@@ -52,7 +52,7 @@ from pybullet_robot import PybulletIKInterface
 
 from pyrcf.components.robot_interfaces.simulation import PybulletRobot
 from pyrcf.control_loop import MinimalCtrlLoop
-from pyrcf.components.local_planners import IKReferenceInterpolator
+from pyrcf.components.local_planners import PybulletIKReferenceInterpolator
 from pyrcf.components.global_planners.ui_reference_generators import (
     PybulletGUIGlobalPlannerInterface,
 )
@@ -97,16 +97,13 @@ if __name__ == "__main__":
     # This planner uses the PybulletIKInterface to solve inverse kinematics for
     # the target pose, and interpolates the joint targets from current to desired
     # values using a second order filter.
-    local_planner = IKReferenceInterpolator(
-        # create `PybulletIKInterface` object for this robot for solving its IK.
-        pybullet_ik_interface=PybulletIKInterface(
-            urdf_path=robot._sim_robot.urdf_path,
-            floating_base=False,
-            starting_base_position=state.state_estimates.pose.position,
-            starting_base_orientation=state.state_estimates.pose.orientation,
-            starting_joint_positions=state.joint_states.joint_positions,
-            joint_names_order=state.joint_states.joint_names,
-        ),
+    local_planner = PybulletIKReferenceInterpolator(
+        urdf_path=robot._sim_robot.urdf_path,
+        floating_base=False,
+        starting_base_position=state.state_estimates.pose.position,
+        starting_base_orientation=state.state_estimates.pose.orientation,
+        starting_joint_positions=state.joint_states.joint_positions,
+        joint_names_order=state.joint_states.joint_names,
         filter_gain=0.03,
         blind_mode=True,
     )

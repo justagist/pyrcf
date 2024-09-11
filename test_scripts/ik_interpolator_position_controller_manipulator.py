@@ -9,9 +9,9 @@ as a PybulletRobot (RobotInterface derivative) instance.
 2. This demo uses a pybullet GUI interface to set end-effector targets. This
 is implemented as a `GlobalPlanner` (`UIBase`) called `PybulletGUIGlobalPlannerInterface`.
 
-3. The local planner is `IKReferenceInterpolator` which uses a second order filter
+3. The local planner is `PybulletIKReferenceInterpolator` which uses a second order filter
 to smoothly reach the joint positions for reaching the end-effector target set using
-the GUI sliders. IK is solved using the `PybulletIKInterface`.
+the GUI sliders.
 
 4. The controller is a joint position (and velocity) tracking controller.
 
@@ -22,11 +22,9 @@ robot command, making the joint tracking much better.
 that shows the actual output from the planner (useful for controller tuning/debugging).
 """
 
-from pybullet_robot import PybulletIKInterface
-
 from pyrcf.components.robot_interfaces.simulation import PybulletRobot
 from pyrcf.control_loop import MinimalCtrlLoop
-from pyrcf.components.local_planners import IKReferenceInterpolator
+from pyrcf.components.local_planners import PybulletIKReferenceInterpolator
 from pyrcf.components.global_planners.ui_reference_generators import (
     PybulletGUIGlobalPlannerInterface,
 )
@@ -68,16 +66,13 @@ if __name__ == "__main__":
 
     # create a local planner that interpolates joint positions (using second-order
     # filter) to reach the end-effector targets from global planner (GUI sliders)
-    local_planner = IKReferenceInterpolator(
-        # create `PybulletIKInterface` object for this robot for solving its IK.
-        pybullet_ik_interface=PybulletIKInterface(
-            urdf_path=robot._sim_robot.urdf_path,
-            floating_base=False,
-            starting_base_position=state.state_estimates.pose.position,
-            starting_base_orientation=state.state_estimates.pose.orientation,
-            starting_joint_positions=state.joint_states.joint_positions,
-            joint_names_order=state.joint_states.joint_names,
-        ),
+    local_planner = PybulletIKReferenceInterpolator(
+        urdf_path=robot._sim_robot.urdf_path,
+        floating_base=False,
+        starting_base_position=state.state_estimates.pose.position,
+        starting_base_orientation=state.state_estimates.pose.orientation,
+        starting_joint_positions=state.joint_states.joint_positions,
+        joint_names_order=state.joint_states.joint_names,
         filter_gain=0.03,
         blind_mode=True,
     )
