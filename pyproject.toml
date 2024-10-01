@@ -57,13 +57,13 @@ pyrcf = { path = ".", editable = true }
 
 [project.optional-dependencies]
 test = [
-  "black>=23,<=24.4.2",
-  "pylint>=2.17.7,<=3.2.6",
+  "black>=23,<=24.8.0",
+  "pylint>=2.17.7,<=3.3.1",
   "pytest-cov>=4.1,<=5.0.0",
-  "pytest>=7.4,<=8.3.2",
-  "hypothesis>=6.82,<=6.108.5",
-  "ruff>=0.0.280,<=0.5.5",
-  "coverage>=7.2.7,<=7.6.0",
+  "pytest>=7.4,<=8.3.3",
+  "hypothesis>=6.82,<=6.112.2",
+  "ruff>=0.0.280,<=0.6.8",
+  "coverage>=7.2.7,<=7.6.1",
 ]
 docs = ["sphinxcontrib-napoleon", "sphinx-rtd-theme", "sphinx-autoapi"]
 torch = ["torch"]
