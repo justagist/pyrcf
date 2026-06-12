@@ -4,11 +4,10 @@
 	"python.testing.pytestEnabled": true,
 	"[python]": {
 		"editor.defaultFormatter": "ms-python.black-formatter",
-		"editor.formatOnSave": true,
+		"editor.formatOnSave": true
 	},
 	"files.exclude": {
-		"**/__pycache__/**": true,
-		"/home/vscode/.local/lib/python3.10/site-packages/pyrcf/**": true
+		"**/__pycache__/**": true
 	},
-	"python.analysis.autoImportCompletions": false //vscode gets it wrong more than right and mostly gets in the way
+	"python.analysis.autoImportCompletions": false
 }
