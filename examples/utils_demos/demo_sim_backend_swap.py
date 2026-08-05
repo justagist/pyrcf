@@ -53,6 +53,14 @@ from pyrcf.core.types import GlobalMotionPlan, PlannerMode, RobotState
 SIM_BACKEND: str = "mujoco"
 """Which simulator to run the control loop against. One of "mujoco" or "pybullet"."""
 
+URDF_EE_NAMES = ["FL_foot", "FR_foot", "RL_foot", "RR_foot"]
+"""End-effector (foot) frame names as they appear in the URDF."""
+
+MUJOCO_EE_NAMES = ["FL_calf", "FR_calf", "RL_calf", "RR_calf"]
+"""Same feet as `URDF_EE_NAMES`, named as the MJCF bodies that carry the foot geoms. Only the
+MuJoCo backend fills in `end_effector_states.contact_forces`; the pybullet interface leaves it
+None, so contact *states* are available on both backends but contact *forces* only on MuJoCo."""
+
 BACKEND_GAINS: dict = {
     # (kp, kd) verified to hold this robot's stance in each simulator -- see the note above on why
     # these have to differ.
@@ -133,12 +141,17 @@ def build_robot(backend: str):
             robot_description_name=f"{ROBOT}_mj_description",
             # pinocchio cannot read MJCF, so point it at the URDF of the same robot
             pinocchio_urdf_description=f"{ROBOT}_description",
+            # this MJCF has no `*_foot` bodies (the feet are geoms on `*_calf`) but the URDF does,
+            # so the simulator and pinocchio need different end-effector names, matched by order
+            ee_names=MUJOCO_EE_NAMES,
+            pinocchio_ee_names=URDF_EE_NAMES,
             floating_base=True,
             place_on_ground=True,
         )
     if backend == "pybullet":
         return PybulletRobot.fromAwesomeRobotDescriptions(
             robot_description_name=f"{ROBOT}_description",
+            ee_names=URDF_EE_NAMES,
             floating_base=True,
             place_on_ground=True,
         )

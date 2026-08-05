@@ -86,8 +86,10 @@ class MujocoRobot(SimulatedRobotInterface):
         default_joint_positions: np.ndarray = None,
         create_pinocchio_interface: bool = True,
         pinocchio_urdf_path: str = None,
+        pinocchio_ee_names: List[str] = None,
         floating_base: bool = True,
         render: bool = True,
+        read_contact_forces: bool = True,
         verbose: bool = True,
         **sim_interface_kwargs,
     ):
@@ -121,11 +123,20 @@ class MujocoRobot(SimulatedRobotInterface):
             pinocchio_urdf_path (str, optional): URDF to use for the PinocchioInterface. Only
                 needed when the physics model is loaded from an MJCF, because pinocchio cannot
                 parse MJCF. Defaults to None (use `urdf_path`).
+            pinocchio_ee_names (List[str], optional): End-effector frame names as they appear in the
+                URDF, when these differ from the body names in the MJCF. For example MuJoCo
+                Menagerie's go2 has no `*_foot` bodies (the feet are geoms on `*_calf`), while the
+                URDF does, so the sim needs `FL_calf` and pinocchio needs `FL_foot`. Defaults to
+                None (use `ee_names` for both).
             floating_base (bool, optional): Specifying whether this robot has a floating or fixed
                 base (setting to True creates a floating base instance with pinocchio, and makes
                 the simulated robot free floating (not fixed base)). Defaults to True.
             render (bool, optional): If True, launches the MuJoCo passive viewer (needs a display).
                 Set to False for headless use. Defaults to True.
+            read_contact_forces (bool, optional): If True, fills
+                `state_estimates.end_effector_states.contact_forces` on every `read()` with the net
+                world-frame contact force on each end-effector. Set to False to skip the (small)
+                per-contact computation. Defaults to True.
             verbose (bool, optional): Verbosity flag for debugging robot info during construction.
                 Defaults to True.
 
@@ -165,6 +176,18 @@ class MujocoRobot(SimulatedRobotInterface):
         if ee_names is None:
             ee_names = []
 
+        self._read_contact_forces = read_contact_forces
+
+        # `pinocchio_ee_names` must be given in the same order as `ee_names`: state read from the
+        # simulator is indexed by the MJCF names, then `update_pinocchio_robot_state` relabels it
+        # with the URDF names, so the two lists are matched positionally.
+        if pinocchio_ee_names is not None and len(pinocchio_ee_names) != len(ee_names):
+            raise ValueError(
+                f"{self.__class__.__name__}: `pinocchio_ee_names` ({len(pinocchio_ee_names)}) must"
+                f" have the same length as `ee_names` ({len(ee_names)}), and be in the same order,"
+                " because end-effector state is matched between the two models positionally."
+            )
+
         self._sim_robot = mujoco_robot.MujocoRobot(
             urdf_path=urdf_path,
             mjcf_path=mjcf_path,
@@ -202,7 +225,7 @@ class MujocoRobot(SimulatedRobotInterface):
 
         super().__init__(
             robot_urdf=pin_urdf,
-            ee_names=ee_names,
+            ee_names=(pinocchio_ee_names if pinocchio_ee_names is not None else ee_names),
             floating_base=floating_base,
             verbose=verbose,
             create_pinocchio_interface=create_pinocchio_interface,
@@ -254,6 +277,15 @@ class MujocoRobot(SimulatedRobotInterface):
         # twist is reported in the world frame by the simulator; the pyrcf contract is base frame
         rot_mat = quat2rot(quaternion=sim_state.base_quaternion).T
 
+        # NOTE: `EndEffectorStates.contact_forces` is part of the pyrcf state contract but the
+        # pybullet interface never fills it in. MuJoCo reports per-contact forces, so populate it
+        # here -- this is what makes force/admittance control usable on this backend.
+        contact_forces = None
+        if self._read_contact_forces and sim_state.ee_order:
+            contact_forces = [
+                self._sim_robot.get_link_contact_force(name) for name in sim_state.ee_order
+            ]
+
         return RobotState(
             joint_states=JointStates(
                 joint_names=sim_state.joint_order,
@@ -272,6 +304,7 @@ class MujocoRobot(SimulatedRobotInterface):
                 ),
                 end_effector_states=EndEffectorStates(
                     contact_states=sim_state.ee_contact_states,
+                    contact_forces=contact_forces,
                     ee_names=sim_state.ee_order,
                 ),
             ),
@@ -343,6 +376,7 @@ class MujocoRobot(SimulatedRobotInterface):
         default_joint_positions: np.ndarray = None,
         create_pinocchio_interface: bool = True,
         pinocchio_urdf_description: str = None,
+        pinocchio_ee_names: List[str] = None,
         floating_base: bool = True,
         render: bool = True,
         verbose: bool = True,
@@ -379,6 +413,9 @@ class MujocoRobot(SimulatedRobotInterface):
                 object for this robot. Defaults to True.
             pinocchio_urdf_description (str, optional): Description package name whose URDF should
                 be used for the PinocchioInterface. Defaults to None.
+            pinocchio_ee_names (List[str], optional): End-effector frame names as they appear in the
+                URDF, when these differ from the MJCF body names. Defaults to None (use
+                `ee_names`).
             floating_base (bool, optional): Whether this robot has a floating base. Defaults to
                 True.
             render (bool, optional): Launch the MuJoCo viewer. Defaults to True.
@@ -414,6 +451,7 @@ class MujocoRobot(SimulatedRobotInterface):
             default_joint_positions=default_joint_positions,
             create_pinocchio_interface=create_pinocchio_interface,
             pinocchio_urdf_path=pinocchio_urdf_path,
+            pinocchio_ee_names=pinocchio_ee_names,
             floating_base=floating_base,
             render=render,
             verbose=verbose,
