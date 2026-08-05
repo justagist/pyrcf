@@ -33,7 +33,15 @@ IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0])
 
 
 def random_quats(n, seed=0):
-    return Rotation.random(n, random_state=seed).as_quat()
+    """Uniformly distributed random unit quaternions.
+
+    NOTE: built from normalised Gaussians rather than `Rotation.random(random_state=...)`, whose
+    signature differs across the scipy versions this project supports (`random_state` was replaced
+    by `rng`).
+    """
+    rng = np.random.default_rng(seed)
+    quats = rng.normal(size=(n, 4))
+    return quats / np.linalg.norm(quats, axis=1, keepdims=True)
 
 
 def random_positions(n, seed=0):

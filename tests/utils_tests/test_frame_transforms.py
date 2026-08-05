@@ -20,6 +20,18 @@ from pyrcf.utils.math_utils import quat_error, transformation_matrix
 IDENTITY_QUAT = np.array([0.0, 0.0, 0.0, 1.0])
 
 
+def random_quats(n, seed=0):
+    """Uniformly distributed random unit quaternions.
+
+    NOTE: built from normalised Gaussians rather than `Rotation.random(random_state=...)`, whose
+    signature differs across the scipy versions this project supports (`random_state` was replaced
+    by `rng`).
+    """
+    rng = np.random.default_rng(seed)
+    quats = rng.normal(size=(n, 4))
+    return quats / np.linalg.norm(quats, axis=1, keepdims=True)
+
+
 def quat_close(q1, q2, atol=1e-9):
     return np.allclose(q1, q2, atol=atol) or np.allclose(q1, -np.asarray(q2), atol=atol)
 
@@ -51,8 +63,8 @@ class TestTransformPoseToFrame:
 
     def test_agrees_with_a_homogeneous_matrix_reference(self):
         rng = np.random.default_rng(0)
-        quats = Rotation.random(40, random_state=1).as_quat()
-        frame_quats = Rotation.random(40, random_state=2).as_quat()
+        quats = random_quats(40, seed=1)
+        frame_quats = random_quats(40, seed=2)
         for i in range(40):
             pos, quat = rng.normal(size=3), quats[i]
             f_pos, f_quat = rng.normal(size=3), frame_quats[i]
@@ -66,8 +78,8 @@ class TestTransformPoseToFrame:
     def test_round_trip_back_to_the_original_frame(self):
         rng = np.random.default_rng(3)
         for quat, f_quat in zip(
-            Rotation.random(20, random_state=4).as_quat(),
-            Rotation.random(20, random_state=5).as_quat(),
+            random_quats(20, seed=4),
+            random_quats(20, seed=5),
             strict=True,
         ):
             pos, f_pos = rng.normal(size=3), rng.normal(size=3)
@@ -122,8 +134,8 @@ class TestRelativePoseBetweenFrames:
 
     def test_matches_transform_pose_to_frame(self):
         rng = np.random.default_rng(6)
-        q1s = Rotation.random(30, random_state=7).as_quat()
-        q2s = Rotation.random(30, random_state=8).as_quat()
+        q1s = random_quats(30, seed=7)
+        q2s = random_quats(30, seed=8)
         for q1, q2 in zip(q1s, q2s, strict=True):
             p1, p2 = rng.normal(size=3), rng.normal(size=3)
             got = get_relative_pose_between_vectors(p1, q1, p2, q2)
@@ -155,7 +167,7 @@ class TestPoseTransformStatics:
     def test_base_teleop_round_trip(self, seed):
         rng = np.random.default_rng(seed)
         pos = rng.normal(size=3)
-        quat = Rotation.random(random_state=seed + 10).as_quat()
+        quat = random_quats(1, seed=seed + 10)[0]
         pt, qt = PoseTrasfrom.base2teleop(pos, quat, self.BASE_POS, self.BASE_QUAT)
         pb, qb = PoseTrasfrom.teleop2base(pt, qt, self.BASE_POS, self.BASE_QUAT)
         assert np.allclose(pb, pos, atol=1e-10)
@@ -165,7 +177,7 @@ class TestPoseTransformStatics:
     def test_teleop_world_round_trip(self, seed):
         rng = np.random.default_rng(seed)
         pos = rng.normal(size=3)
-        quat = Rotation.random(random_state=seed + 20).as_quat()
+        quat = random_quats(1, seed=seed + 20)[0]
         pw, qw = PoseTrasfrom.teleop2world(pos, quat, self.BASE_POS, self.BASE_QUAT)
         pt, qt = PoseTrasfrom.world2teleop(pw, qw, self.BASE_POS, self.BASE_QUAT)
         assert np.allclose(pt, pos, atol=1e-10)
