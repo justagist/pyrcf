@@ -19,6 +19,10 @@ from pyrcf.core.logging import (
     throttled_logging,
 )
 
+# these tests deliberately inspect the throttled logger registry, since "one logger per call site"
+# is the behaviour under test
+# pylint: disable=protected-access
+
 
 class RecordCollector(std_logging.Handler):
     """Handler that keeps every record it is given, so tests can assert on them directly
@@ -100,9 +104,10 @@ class TestThrottledLogging:
     def test_logger_name_identifies_the_caller(self):
         throttled_logging.info("locate me", 10.0)
 
-        (name,) = _ThrottledLogging._ACTIVE_THROTTLED_LOGGERS
-        assert "test_logging.py" in name, "logger should be named after the calling file"
-        assert "core/logging.py" not in name.replace("\\", "/")
+        names = list(_ThrottledLogging._ACTIVE_THROTTLED_LOGGERS)
+        assert len(names) == 1
+        assert "test_logging.py" in names[0], "logger should be named after the calling file"
+        assert "core/logging.py" not in names[0].replace("\\", "/")
 
     def test_both_call_sites_are_emitted(self, collector: RecordCollector):
         throttled_logging.warning("message from site a", 10.0)
