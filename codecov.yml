@@ -1,0 +1,30 @@
+# Codecov configuration.
+#
+# NOTE on the baseline: coverage measurement changed in 0.0.7. Before that, `[tool.coverage.run]`
+# in pyproject.toml had no `source`, so coverage only measured modules that the tests happened to
+# import and reported ~58%. It now measures the whole `pyrcf` package and reports ~48%. Coverage
+# did not get worse -- the measurement got honest -- but the two numbers are not comparable, which
+# is why the `project` status read that commit as a ~10 point drop.
+
+coverage:
+  precision: 2
+  round: down
+  range: "40...80"
+
+  status:
+    project:
+      default:
+        target: auto # compare against the parent commit
+        threshold: 1% # tolerate small fluctuations, still catch real regressions
+    patch:
+      default:
+        # Large parts of the package (pybullet, pinocchio, GUI and joystick paths) need a running
+        # simulator or hardware to exercise, so a strict patch target blocks routine work in those
+        # areas. Report the number but do not fail the build. Tighten this as the suite grows --
+        # see the "Testing" section of todo.md for the highest-value gaps.
+        informational: true
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: true # only comment when coverage actually changes
