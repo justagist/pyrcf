@@ -1,31 +1,17 @@
 # To get started with Dependabot version updates, you'll need to specify which
 # package ecosystems to update and where the package manifests are located.
 # Please see the documentation for all configuration options:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates 
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+# NOTE: the "pip" ecosystem is deliberately not managed here. Python dependencies are declared in
+# pyproject.toml but resolved through pixi.lock, and dependabot cannot regenerate that lockfile.
+# Its pip PRs therefore bumped pyproject.toml only, leaving the lockfile stale, so CI failed at
+# `pixi install --locked` with "lock file not up-to-date with the workspace" and the PRs could
+# never be merged. Update Python dependencies with `pixi run update-lock` (i.e. `pixi update`)
+# instead, which updates pixi.lock along with the manifest.
 
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "monthly"
-    groups:
-      dev-dependencies:
-        #try to group all development dependencies updates into a single pr
-        patterns:          
-          - "black"
-          - "check-manifest"
-          - "pre-commit"
-          - "pylint"
-          - "pytest"
-          - "pytest-cov"          
-          - "hypothesis"
-          - "ruff"
-          - "coverage"
-      lib-dependencies:
-        #try to group all third party library updates into a single pr
-        patterns:
-          - "*"
   - package-ecosystem: github-actions
     directory: /
     schedule:
