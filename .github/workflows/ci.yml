@@ -14,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [py310, py311, py312]
+        # `mujoco` covers the optional MuJoCo backend; the py3xx envs deliberately do not
+        # have it installed, which also keeps the optional-dependency guard under test
+        environment: [py310, py311, py312, mujoco]
     steps:
       - name: Checkout
         uses: actions/checkout@v7

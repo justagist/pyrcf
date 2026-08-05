@@ -15,6 +15,7 @@ from pyrcf.core.logging import (
     PYRCF_LOGGER_NAME,
     ThrottledLogger,
     _ThrottledLogging,
+    handler as pyrcf_handler,
     logger,
     throttled_logging,
 )
@@ -70,9 +71,16 @@ class TestLoggerScoping:
         """Otherwise applications that configure their own root handler get duplicate records."""
         assert logger.propagate is False
 
-    def test_pyrcf_handlers_are_not_attached_to_root(self):
-        root_handlers = std_logging.getLogger().handlers
-        assert all(handler not in root_handlers for handler in logger.handlers)
+    def test_pyrcf_handler_is_not_attached_to_root(self):
+        """pyrcf must attach its handler to its own logger and never to the root logger.
+
+        NOTE: this checks pyrcf's own handler specifically rather than asserting that pyrcf's and
+        root's handler lists are disjoint. pytest >= 9 injects its capture handlers into *every*
+        logger (pyrcf's included), so a disjointness assertion would fail on pytest's handlers
+        rather than on anything pyrcf did.
+        """
+        assert pyrcf_handler in logger.handlers
+        assert pyrcf_handler not in std_logging.getLogger().handlers
 
     def test_logger_emits_records(self):
         collector = RecordCollector()
