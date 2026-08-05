@@ -5,7 +5,7 @@ from functools import partial
 import numpy as np
 
 from ....core.types import GlobalMotionPlan, PlannerMode
-from ....core.logging import logging
+from ....core.logging import logger
 
 # pylint: disable=C0116,C0103
 
@@ -95,7 +95,7 @@ class GlobalPlanJointPositionIncrementer:
 
     def _check_ready(self, global_plan: GlobalMotionPlan):
         if self._check_and_update and global_plan.planner_mode != PlannerMode.CUSTOM:
-            logging.warning(
+            logger.warning(
                 f"{self.__class__.__name__}: Planner is not activated. Not updating joint commands."
                 " Set PlannerMode to PlannerMode.CUSTOM in the global plan."
             )

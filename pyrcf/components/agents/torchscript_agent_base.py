@@ -4,13 +4,18 @@ import numpy as np
 
 from ...core.types import GlobalMotionPlan, RobotCmd, RobotState, JointStates, LocalMotionPlan
 from .ml_agent_base import MLAgentBase
-from ...core.logging import logging
+from ...core.logging import logger
 from ...utils.time_utils import ClockBase, PythonPerfClock, RateTrigger
 
 from ...variables import TORCH_AVAILABLE
 
 if TORCH_AVAILABLE:
     import torch  # pylint: disable=E0401
+
+# NOTE: `torch` is an optional dependency, so it is imported conditionally above. Every code path
+# that touches it is guarded by a `TORCH_AVAILABLE` check that raises first, but static analysis
+# cannot follow that, hence the module-level suppression.
+# pylint: disable=possibly-used-before-assignment
 
 
 class TorchScriptAgentBase(MLAgentBase):
@@ -85,10 +90,10 @@ class TorchScriptAgentBase(MLAgentBase):
         inference"""
 
         if warmup_iterations is not None and warmup_iterations > 0:
-            logging.info("Warming up policy...")
+            logger.info("Warming up policy...")
             for _ in range(warmup_iterations):
                 self._model.forward(self._tensor_inp)
-            logging.info("Warm up complete.")
+            logger.info("Warm up complete.")
 
         self._latest_ctrl_cmd: RobotCmd = None
         """The RobotCmd object that can be use in the `update_input_to_model` method
@@ -102,7 +107,7 @@ class TorchScriptAgentBase(MLAgentBase):
         self._rate = update_rate
         if self._rate is not None and self._rate > 0.0:
             self._rate_trigger = RateTrigger(rate=self._rate, clock=clock)
-            logging.debug(f"{self.__class__.__name__}: Setting trigger rate to {self._rate}Hz.")
+            logger.debug(f"{self.__class__.__name__}: Setting trigger rate to {self._rate}Hz.")
 
     def _should_run(self):
         if self._rate is None:

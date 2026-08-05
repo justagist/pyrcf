@@ -33,8 +33,7 @@ class ListElementsCompareType:
     def get_row_names(self) -> List[str]:
         if self.row_names is not None:
             return self.row_names
-        else:
-            return [f"data_{i+1}" for i in range(len(self.values))]
+        return [f"data_{i+1}" for i in range(len(self.values))]
 
     def get_values(self) -> np.ndarray:
         return np.array(self.values)
@@ -106,9 +105,8 @@ class ListElementsCompareType:
         except (TypeError, AssertionError) as e:
             if raise_exception_if_wrong:
                 raise
-            else:
-                print(repr(e))
-                return False
+            print(repr(e))
+            return False
 
         return True
 
@@ -128,8 +126,7 @@ class JointStatesCompareType:
     def get_row_names(self) -> List[str]:
         if self.row_names is not None and len(self.row_names) == len(self.joint_states_list):
             return self.row_names
-        else:
-            return [f"data_{i}" for i in range(len(self.joint_states_list))]
+        return [f"data_{i}" for i in range(len(self.joint_states_list))]
 
 
 @dataclass
@@ -147,5 +144,4 @@ class Pose3DCompareType:
     def get_row_names(self) -> List[str]:
         if self.row_names is not None and len(self.row_names) == len(self.pose_list):
             return self.row_names
-        else:
-            return [f"data_{i}" for i in range(len(self.pose_list))]
+        return [f"data_{i}" for i in range(len(self.pose_list))]

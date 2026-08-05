@@ -117,7 +117,7 @@ class PybulletDebugFrameViz:
         self,
         cid: int,
         position: Vector3D = None,
-        orientation: QuatType = np.array([0, 0, 0, 1]),
+        orientation: QuatType = None,
         line_length: float = 0.2,
         line_width: float = 2,
         duration: float = 0.0,
@@ -133,6 +133,8 @@ class PybulletDebugFrameViz:
             line_width (float, optional): Line thickness. Defaults to 2.
             duration (float, optional): Lifetime for the frame. Defaults to 0.0 (infinite).
         """
+        if orientation is None:
+            orientation = np.array([0, 0, 0, 1])
         self._len = line_length
         self._lw = line_width
         self._duration = duration
@@ -319,7 +321,7 @@ class PybulletTextWithRateTrigger(PybulletText):
             text (str): The new text to replace with.
         """
         if self._trigger():
-            return super().update_text(text)
+            super().update_text(text)
 
 
 class PybulletDebugPoints:

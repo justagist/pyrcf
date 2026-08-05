@@ -4,7 +4,7 @@ import copy
 
 from ...core.types import GlobalMotionPlan, LocalMotionPlan, RobotState, RobotCmd
 from ...utils.time_utils import RateTrigger, ClockBase, PythonPerfClock
-from ...core.logging import logging
+from ...core.logging import logger
 
 
 class CtrlLoopDebuggerBase(ABC):
@@ -21,7 +21,7 @@ class CtrlLoopDebuggerBase(ABC):
         self._rate = rate
         if self._rate is not None and self._rate > 0.0:
             self._rate_trigger = RateTrigger(rate=self._rate, clock=clock)
-            logging.debug(f"{self.__class__.__name__}: Setting trigger rate to {self._rate}Hz.")
+            logger.debug(f"{self.__class__.__name__}: Setting trigger rate to {self._rate}Hz.")
 
     def _should_run(self):
         if self._rate is None:

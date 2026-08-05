@@ -48,8 +48,6 @@ PD gains.
 Controllers can be switched by setting `USE_GRAVITY_COMP_CONTROLLER` to True or False.
 """
 
-from pybullet_robot import PybulletIKInterface
-
 from pyrcf.components.robot_interfaces.simulation import PybulletRobot
 from pyrcf.control_loop import MinimalCtrlLoop
 from pyrcf.components.local_planners import PybulletIKReferenceInterpolator

@@ -2,7 +2,7 @@
 
 from time import perf_counter, sleep, time
 from abc import ABC, abstractmethod
-from ..core.logging import logging
+from ..core.logging import logger
 
 
 class ClockBase(ABC):
@@ -163,7 +163,7 @@ class RateLimiter:
         if self.__slack > 0.0:
             sleep(self.__slack)
         elif self.warn and self.__slack < -0.1 * self.period:
-            logging.warning(
+            logger.warning(
                 "%s is late by %f [ms]",
                 self.name,
                 round(1e3 * self.__slack, 1),

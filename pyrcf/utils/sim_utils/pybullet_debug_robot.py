@@ -19,8 +19,8 @@ class PybulletDebugRobot:
         self,
         urdf_path: str,
         cid: int = 0,
-        base_position: np.ndarray = np.zeros(3),
-        base_orientation: np.array = np.array([0, 0, 0, 1]),
+        base_position: np.ndarray = None,
+        base_orientation: np.array = None,
         rgba: Tuple[float, float, float, float] | None = (0, 0, 0, 0.3),
     ):
         """A debugger robot visualiser for bullet robots. These robots are meant to be used for
@@ -38,6 +38,12 @@ class PybulletDebugRobot:
             rgba (Tuple[float, float, float, float], optional): The RGBA tuple for the debugger
                 robot visualiser. Defaults to (0, 0, 0, 0.3).
         """
+        if base_position is None:
+            base_position = np.zeros(3)
+
+        if base_orientation is None:
+            base_orientation = np.array([0, 0, 0, 1])
+
         self._cid = cid
         self._viz_robot_id = pb.loadURDF(
             urdf_path,
@@ -163,8 +169,8 @@ class PbDebugRobotWithJointCallback(CustomCallbackBase):
         joint_names: List[str],
         get_joint_positions_callback: Callable[[], np.ndarray],
         get_base_pose_callback: Callable[[], Tuple[Vector3D, QuatType]] = lambda: None,
-        base_position: np.ndarray = np.zeros(3),
-        base_orientation: np.array = np.array([0, 0, 0, 1]),
+        base_position: np.ndarray = None,
+        base_orientation: np.array = None,
         rgba: Tuple[float, float, float, float] | None = (0, 0, 0, 0.3),
     ):
         self._viz_robot = PybulletDebugRobot(

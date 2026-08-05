@@ -21,6 +21,22 @@ DEFAULT_PLOTJUGGLER_PUBLISH_PORT: int = 9872
 class PyRCFTypesEncoder(json.JSONEncoder):
     """Custom json encoding for handling datatypes in custom PyRCF datatypes."""
 
+    def _default_encoding(self, o):
+        """Fall back to the standard json encoding for a type this encoder does not handle.
+
+        Args:
+            o: The object to encode.
+
+        Raises:
+            TypeError: If the object is not json-serialisable (the culprit object is included in
+                the message).
+        """
+        try:
+            return json.JSONEncoder.default(self, o)
+        except (TypeError, OverflowError) as e:
+            # exposing culprit along with the original error
+            raise TypeError(f"{e}: culprit: {o}") from e
+
     def default(self, o):
         if isinstance(o, JointStatesCompareType):
             # custom formatting to make comparing joint states easier
@@ -52,7 +68,8 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                         except (KeyError, AttributeError):
                             continue
                 return data
-        elif isinstance(o, Pose3DCompareType):
+            return self._default_encoding(o)
+        if isinstance(o, Pose3DCompareType):
             # custom formatting to make comparing Pose3D objects easier
             if o.pose_list is not None and len(o.pose_list) > 0:
                 data = {
@@ -71,7 +88,8 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     data["RPY (deg)"]["pitch"][name] = rpy[1]
                     data["RPY (deg)"]["yaw"][name] = rpy[2]
                 return data
-        elif isinstance(o, ListElementsCompareType):
+            return self._default_encoding(o)
+        if isinstance(o, ListElementsCompareType):
             # custom formatting to make comparing two similar list of floats easier
             if o.check_format(raise_exception_if_wrong=False):
                 rows = o.get_row_names()
@@ -81,7 +99,8 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                 for c, col in enumerate(cols):
                     data[col] = {rows[i]: vals[i, c] for i in range(len(rows))}
                 return data
-        elif isinstance(o, Pose3D):
+            return self._default_encoding(o)
+        if isinstance(o, Pose3D):
             # add rpy and quaternion for orientation data
             return {
                 "position": o.position,
@@ -95,7 +114,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     ),
                 },
             }
-        elif isinstance(o, EndEffectorStates):
+        if isinstance(o, EndEffectorStates):
             # hack to make ee names show up for corresponding values
             data = {}
             _ee_names = o.ee_names
@@ -112,7 +131,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     # expose ee values next to ee names
                     data[field.name] = dict(zip(_ee_names, self.default(attr_vals)))
             return data
-        elif isinstance(o, RobotCmd) and o.joint_commands.joint_names is not None:
+        if isinstance(o, RobotCmd) and o.joint_commands.joint_names is not None:
             _j_names = o.joint_commands.joint_names
             data = {}
             for field in dataclasses.fields(o):
@@ -123,7 +142,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     # expose joint values next to joint names
                     data[field.name] = dict(zip(_j_names, self.default(attr_vals)))
             return data
-        elif isinstance(o, JointStates):
+        if isinstance(o, JointStates):
             # hack to make joint names show up for corresponding values
             data = {}
             _j_names = o.joint_names if o.joint_names is not None else []
@@ -146,32 +165,27 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                 # else:
                 #     data[field.name] = self.default(attr_vals)
             return data
-        elif dataclasses.is_dataclass(o):
+        if dataclasses.is_dataclass(o):
             # handling all other dataclasses (this takes care of all other PyRCF custom types)
             data = {}
             for field in dataclasses.fields(o):
                 data[field.name] = self.default(getattr(o, field.name))
             return data
-        elif isinstance(o, np.ndarray):
+        if isinstance(o, np.ndarray):
             return o.tolist()
-        elif isinstance(o, list):
+        if isinstance(o, list):
             # handling weird issue when o = []
             return list(o)
-        elif o is None:
+        if o is None:
             return ""
-        elif isinstance(o, enum.Enum):
+        if isinstance(o, enum.Enum):
             # handling Enum types to show up with their int values (e.g. PlannerMode)
             return {"current value": o.value, o.name: o.value}
-        elif isinstance(o, np.number):
+        if isinstance(o, np.number):
             # handling weird issue of single numbers in np types (e.g. np.int64)
             return float(o)
-        else:
-            # for all other types use default encoding if available
-            try:
-                return json.JSONEncoder.default(self, o)
-            except (TypeError, OverflowError) as e:
-                # exposing culprit along with the original error
-                raise TypeError(f"{e}: culprit: {o}") from e
+        # for all other types use default encoding if available
+        return self._default_encoding(o)
 
 
 class PyRCFPublisherBase(ABC):

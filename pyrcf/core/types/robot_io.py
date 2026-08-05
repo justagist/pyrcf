@@ -5,7 +5,7 @@ import copy
 from numbers import Number
 
 from .tf_types import Pose3D, Twist, Vector3D
-from ..logging import logging
+from ..logging import logger
 
 
 @dataclass
@@ -63,12 +63,11 @@ class EndEffectorStates:
             idx = self._ee_name_to_idx[ee_name]
         except KeyError as ke:
             raise KeyError(f"EE name '{ee_name}' not found in this object.") from ke
-        else:
-            ee_pose = None if self.ee_poses is None else self.ee_poses[idx]
-            ee_twist = None if self.ee_twists is None else self.ee_twists[idx]
-            contact_state = None if self.contact_states is None else self.contact_states[idx]
-            contact_force = None if self.contact_forces is None else self.contact_forces[idx]
-            return ee_pose, ee_twist, contact_state, contact_force
+        ee_pose = None if self.ee_poses is None else self.ee_poses[idx]
+        ee_twist = None if self.ee_twists is None else self.ee_twists[idx]
+        contact_state = None if self.contact_states is None else self.contact_states[idx]
+        contact_force = None if self.contact_forces is None else self.contact_forces[idx]
+        return ee_pose, ee_twist, contact_state, contact_force
 
     def __getitem__(
         self, ee_name: str
@@ -139,7 +138,7 @@ class EndEffectorStates:
             self.contact_forces = list(self.contact_forces) + list(other.contact_forces)
         else:
             if not run_checks:
-                logging.warning(
+                logger.warning(
                     f"{self.__class__.__name__}: Setting `overwrite_existing` to True is"
                     " not allowed when `run_checks=False`. Will ignore the `run_checks`"
                     " flag for this now."
@@ -157,8 +156,10 @@ class EndEffectorStates:
             ee_cs = []
             ee_forces = []
             for ee_name in self.ee_names + other.ee_names:
-                if ee_name not in ee_names:
-                    ee_names.append(ee_name)
+                if ee_name in ee_names:
+                    # end-effector is present in both objects and has already been handled
+                    continue
+                ee_names.append(ee_name)
                 if ee_name in other.ee_names:
                     # if this ee is in the second object, info from that will be used,
                     # even if the same ee exists in the first object
@@ -236,11 +237,10 @@ class JointStates:
             idx = self._joint_name_to_idx[joint_name]
         except KeyError as ke:
             raise KeyError(f"Joint '{joint_name}' not found in this object.") from ke
-        else:
-            joint_position = None if self.joint_positions is None else self.joint_positions[idx]
-            joint_velocity = None if self.joint_velocities is None else self.joint_velocities[idx]
-            joint_effort = None if self.joint_efforts is None else self.joint_efforts[idx]
-            return joint_position, joint_velocity, joint_effort
+        joint_position = None if self.joint_positions is None else self.joint_positions[idx]
+        joint_velocity = None if self.joint_velocities is None else self.joint_velocities[idx]
+        joint_effort = None if self.joint_efforts is None else self.joint_efforts[idx]
+        return joint_position, joint_velocity, joint_effort
 
     def __getitem__(self, joint_name: str) -> Tuple[float | None, float | None, float | None]:
         """Get the joint states (pos, vel, effort) of the specified joint.
@@ -302,7 +302,7 @@ class JointStates:
             self.joint_efforts = np.append(self.joint_efforts, other.joint_efforts)
         else:
             if not run_checks:
-                logging.warning(
+                logger.warning(
                     f"{self.__class__.__name__}: Setting `overwrite_existing` to True is"
                     " not allowed when `run_checks=False`. Will ignore the `run_checks`"
                     " flag for this now."
@@ -319,8 +319,10 @@ class JointStates:
             j_vel = []
             j_eff = []
             for j_name in self.joint_names + other.joint_names:
-                if j_name not in j_names:
-                    j_names.append(j_name)
+                if j_name in j_names:
+                    # joint is present in both objects and has already been handled
+                    continue
+                j_names.append(j_name)
                 if j_name in other.joint_names:
                     # if this joint is in the second object, info from that will be used,
                     # even if the same joint exists in the first object
@@ -630,8 +632,18 @@ class RobotCmd:
             overwrite_existing (bool, optional): If set to True, will overwrite values with the
                 new ones if same joint_name exists. Defaults to False.
         """
-        new_kps = np.append(self.Kp, other.Kp)
-        new_kds = np.append(self.Kd, other.Kd)
+        self_dof = len(self.joint_commands.joint_names)
+        other_dof = len(other.joint_commands.joint_names)
+        # gains are optional on a RobotCmd; treat unset gains as zeros so that the
+        # concatenated arrays always line up with the concatenated joint names
+        new_kps = np.append(
+            np.zeros(self_dof) if self.Kp is None else self.Kp,
+            np.zeros(other_dof) if other.Kp is None else other.Kp,
+        )
+        new_kds = np.append(
+            np.zeros(self_dof) if self.Kd is None else self.Kd,
+            np.zeros(other_dof) if other.Kd is None else other.Kd,
+        )
         j_names = self.joint_commands.joint_names + other.joint_commands.joint_names
         self.joint_commands.extend(
             other=other.joint_commands,
@@ -642,6 +654,10 @@ class RobotCmd:
             self.Kp = new_kps
             self.Kd = new_kds
         else:
+            # `joint_commands` has just grown, so the existing gain arrays are too short to be
+            # indexed by the new joint ordering. Resize them before filling in the values.
+            self.Kp = np.zeros(len(self.joint_commands.joint_names))
+            self.Kd = np.zeros(len(self.joint_commands.joint_names))
             self.set_joint_gains(joint_names=j_names, Kp=new_kps, Kd=new_kds)
 
     def update_from(self, other: "RobotCmd"):

@@ -2,69 +2,87 @@
 
 Useful for finding out joint values and joint limits.
 
-Usage: 
-    pyrcf-visualise-robot <description_name> [as_floating_base? (1 or 0)]
-    Args:
-        <description_name>: Provide robot description name as first argument
-            The robot description name should be a valid path to urdf file or 
-            name of a description package from
-            the `robot_descriptions.py` repo that has a valid urdf file: 
-            https://github.com/robot-descriptions/robot_descriptions.py?tab=readme-ov-file#descriptions.
-            e.g. `pepper_description`.
-        (Optional): second argument can be 1 or 0 to load the robot as
-            a fixed base robot (1) or not (0).
+Usage:
+    pyrcf-visualise-robot <robot> [--floating-base]
+
+    Run `pyrcf-visualise-robot --help` for the full argument list.
 """
 
-from pyrcf.components.robot_interfaces.simulation import PybulletRobot
-from pyrcf.utils.sim_utils import PybulletRobotVisualizer
-from pyrcf.core.logging import logging
-import sys
+import argparse
 from pathlib import Path
 
-usage_string = (
-    "\nVisualise any robot urdf (or robot description package from robot_description.py) in pybullet.\n"
-    "Useful for finding out joint values and joint limits.\n"
-    "\n\nUsage: \n\n"
-    "pyrcf-visualise-robot <description_name> [as_floating_base? (1 or 0)]\n\n"
-    "Args:\n"
-    "\t <description_name>: Provide robot description name as first argument\n"
-    "\t\tThe robot description name should be a valid path to urdf file or \n"
-    "\t\tname of a description package from\n"
-    "\t\t the `robot_descriptions.py` repo that has a valid urdf file: \n"
-    "\t\thttps://github.com/robot-descriptions/robot_descriptions.py?tab=readme-ov-file#descriptions.\n"
-    "\t\t e.g. `pepper_description`.\n"
-    "\t (Optional): second argument can be 1 or 0 to load the robot as\n"
-    "\t\ta fixed base robot (1) or not (0).\n"
+from pyrcf.components.robot_interfaces.simulation import PybulletRobot
+from pyrcf.core.logging import logger
+from pyrcf.utils.sim_utils import PybulletRobotVisualizer
+
+DESCRIPTION = (
+    "Visualise any robot urdf (or robot description package from robot_descriptions.py) in "
+    "pybullet. Useful for finding out joint values and joint limits."
+)
+
+ROBOT_ARG_HELP = (
+    "Path to a urdf file, or the name of a description package from the `robot_descriptions.py` "
+    "repo that has a valid urdf file "
+    "(https://github.com/robot-descriptions/robot_descriptions.py#descriptions), "
+    "e.g. `pepper_description`."
 )
 
 
+def build_parser() -> argparse.ArgumentParser:
+    """Build the argument parser for this executable.
+
+    Returns:
+        argparse.ArgumentParser: the parser for `pyrcf-visualise-robot`.
+    """
+    parser = argparse.ArgumentParser(
+        prog="pyrcf-visualise-robot",
+        description=DESCRIPTION,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            "examples:\n"
+            "  pyrcf-visualise-robot pepper_description\n"
+            "  pyrcf-visualise-robot /path/to/robot.urdf --floating-base\n"
+        ),
+    )
+    parser.add_argument("robot", help=ROBOT_ARG_HELP)
+    # NOTE: the robot is loaded with a fixed base by default, which is what you almost always
+    # want for inspecting joint ranges.
+    parser.add_argument(
+        "--floating-base",
+        action="store_true",
+        help="Load the robot with a free-floating base instead of a fixed base.",
+    )
+    parser.add_argument(
+        "--sim-step-rate",
+        type=float,
+        default=240.0,
+        help="Rate (hz) at which the simulation is stepped. Defaults to 240.",
+    )
+    parser.add_argument(
+        "--slider-update-rate",
+        type=float,
+        default=10.0,
+        help="Rate (hz) at which the GUI sliders are read. Defaults to 10.",
+    )
+    return parser
+
+
 def main():
+    args = build_parser().parse_args()
 
-    if len(sys.argv) < 2:
-        print(usage_string)
-        return
+    floating_base: bool = args.floating_base
+    logger.info(f"Robot has fixed base: {not floating_base}\n")
 
-    fixed_base: bool = True
-
-    if len(sys.argv) > 2:
-        fixed_base = bool(int(sys.argv[2]))
-
-    logging.info(f"Robot has fixed base: {fixed_base}\n")
-
-    try:
-        if Path(sys.argv[1]).is_file():
-            robot = PybulletRobot(
-                urdf_path=sys.argv[1], floating_base=not fixed_base, enable_torque_mode=False
-            )
-        else:
-            robot: PybulletRobot = PybulletRobot.fromAwesomeRobotDescriptions(
-                robot_description_name=sys.argv[1],
-                floating_base=not fixed_base,
-                enable_torque_mode=False,
-            )
-    except Exception:
-        print(usage_string)
-        raise
+    if Path(args.robot).is_file():
+        robot = PybulletRobot(
+            urdf_path=args.robot, floating_base=floating_base, enable_torque_mode=False
+        )
+    else:
+        robot: PybulletRobot = PybulletRobot.fromAwesomeRobotDescriptions(
+            robot_description_name=args.robot,
+            floating_base=floating_base,
+            enable_torque_mode=False,
+        )
 
     # load the visualiser using this robot
     viz: PybulletRobotVisualizer = PybulletRobotVisualizer.fromBulletRobot(
@@ -76,8 +94,10 @@ def main():
     )
 
     try:
-        viz.run(sim_step_rate=240, slider_update_rate=10)
+        viz.run(sim_step_rate=args.sim_step_rate, slider_update_rate=args.slider_update_rate)
     except KeyboardInterrupt:
+        pass
+    finally:
         viz.close()
 
 

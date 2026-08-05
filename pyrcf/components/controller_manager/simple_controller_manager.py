@@ -17,7 +17,7 @@ class SimpleControllerManager(ControllerManagerBase):
     def __init__(
         self,
         agents: List[AgentBase] = None,
-        command_accumulation_policy: CommandAccumulatorBase = SimpleCmdOverride(),
+        command_accumulation_policy: CommandAccumulatorBase = None,
     ):
         """Constructor.
 
@@ -31,6 +31,8 @@ class SimpleControllerManager(ControllerManagerBase):
         """
         if agents is None:
             agents = []
+        if command_accumulation_policy is None:
+            command_accumulation_policy = SimpleCmdOverride()
         super().__init__(agents=agents, command_accumulation_policy=command_accumulation_policy)
 
     def update(

@@ -1,6 +1,6 @@
 [project]
 name = "pyrcf"
-version = "0.0.6"
+version = "0.0.7"
 authors = [{ name = "Saif Sidhik", email = "mail@saifsidhik.page" }]
 description = "A Python Robot Control Framework for quickly prototyping control algorithms for different robot embodiments."
 readme = "README.md"
@@ -26,12 +26,31 @@ dependencies = [
   "pyzmq>=25",
 ]
 
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 include = ["pyrcf", "pyrcf.*"]
+
+[tool.setuptools.package-data]
+# ship the PEP 561 marker so that type checkers use the (already complete) inline annotations
+pyrcf = ["py.typed"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
@@ -66,6 +85,9 @@ torch = ["torch"]
 [project.urls]
 Source = "https://github.com/justagist/pyrcf"
 Home = "https://github.com/justagist/pyrcf"
+Documentation = "https://pyrcf.readthedocs.io"
+Issues = "https://github.com/justagist/pyrcf/issues"
+Changelog = "https://github.com/justagist/pyrcf/blob/main/CHANGELOG.md"
 
 # Environments
 [tool.pixi.environments]
@@ -77,33 +99,47 @@ torch = ["py312", "torch"]
 docs = ["py312", "docs"]
 
 [tool.pixi.tasks]
+# --- local development: these rewrite files in place ---
 format = "black ."
 ruff-lint = "ruff check . --fix"
 pylint = "pylint --version && echo 'running pylint...' && pylint $(git ls-files '*.py')"
 lint = { depends-on = ["ruff-lint", "pylint"] }
 style = { depends-on = ["format", "lint"] }
+
+# --- verification: these report and fail, they never rewrite files ---
+# NOTE: CI must not use the fixing variants above. `black .` always exits 0 and
+# `ruff check --fix` repairs then discards its own findings, so neither can fail a build.
+format-check = "black --check --diff ."
+ruff-check = "ruff check ."
+lint-check = { depends-on = ["format-check", "ruff-check", "pylint"] }
+
 test = "pytest"
 coverage = "coverage run -m pytest && coverage xml -o coverage.xml"
 coverage-report = "coverage report -m"
 view-coverage-html = "coverage html -d .htmlcov"
 generate-docs-html = "make -C docs/ html"
-ci-no-cover = { depends-on = ["style", "test"] }
-ci = { depends-on = ["format", "ruff-lint", "coverage", "coverage-report"] }
+ci-no-cover = { depends-on = ["lint-check", "test"] }
+ci = { depends-on = ["lint-check", "coverage", "coverage-report"] }
 update-lock = "pixi update"
 clear-pixi = "rm -rf .pixi pixi.lock"
 setup-git-merge-driver = "git config merge.ourslock.driver true"
 
 
 [tool.pylint]
-extension-pkg-whitelist = ["numpy"]
-jobs = 16                           #detect number of cores
+# these are compiled extension modules; without this pylint cannot introspect them and reports
+# every attribute access on them as a false-positive no-member/c-extension-no-member
+extension-pkg-allow-list = ["numpy", "pybullet", "pinocchio", "pygame"]
+jobs = 16                                                                # detect number of cores
 
 [tool.pylint.'MESSAGES CONTROL']
-disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-locals,too-many-branches,too-many-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
+disable = "C,logging-fstring-interpolation,line-too-long,fixme,broad-exception-caught,missing-module-docstring,too-many-instance-attributes,too-few-public-methods,too-many-arguments,too-many-positional-arguments,too-many-locals,too-many-branches,too-many-statements,too-many-nested-blocks,too-many-return-statements,use-dict-literal,cyclic-import,duplicate-code,too-many-public-methods"
 enable = "no-else-return,consider-using-in"
 
 [tool.black]
 line-length = 100
+# pin the target so formatting is reproducible across black versions and matches ruff's
+# `target-version` below (otherwise newer black infers a newer grammar and reformats differently)
+target-version = ["py310"]
 
 [tool.ruff]
 line-length = 100 # Same as Black.
@@ -111,18 +147,42 @@ line-length = 100 # Same as Black.
 target-version = "py310"
 
 [tool.ruff.lint]
+# `B` (flake8-bugbear) is enabled on top of the defaults mainly for B006/B008: shared mutable
+# default arguments leaked state between component instances in several places.
+select = ["E4", "E7", "E9", "F", "B"]
 # Never enforce `E501` (line length violations).
 #"F841" will auto remove unused variables which is annoying during development, pylint catches this anyway
-ignore = ["E501", "E902", "F841"]
+# B905: `zip()` without `strict=`. TODO: enable this. Deciding between strict=True (a length
+#   mismatch between e.g. joint names and joint values is a bug) and strict=False needs a
+#   judgement per call site, and those paths are not covered by tests yet.
+# B024: `PyRCFComponent` is deliberately an ABC with no abstract methods -- it is the shared
+#   marker base for all components, and each child interface declares its own abstract methods.
+ignore = ["E501", "E902", "F841", "B905", "B024"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.flake8-bugbear]
+# these are stateless value objects, so sharing one instance across calls is safe and keeps the
+# `clock=PythonPerfClock()` default readable in the many components that take a clock
+extend-immutable-calls = [
+  "pyrcf.utils.time_utils.PythonPerfClock",
+  "pyrcf.utils.time_utils.PythonEpochClock",
+]
 
 # Ignore `E402` (import violations) in all `__init__.py` files, and in `path/to/file.py`.
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402", "F401"]
 
 
+[tool.pytest.ini_options]
+# only collect the real test suite: `test_scripts/` holds manual sim scripts, and one of them
+# matches pytest's `*_test.py` discovery pattern
+testpaths = ["tests"]
+
 [tool.coverage.run]
+# NOTE: without `source`, coverage only measures modules that happen to get imported by the
+# tests, which reports a far higher percentage than the package actually has covered.
+source = ["pyrcf"]
 omit = ["*/test/*", "__init__.py"]
 
 [tool.coverage.report]

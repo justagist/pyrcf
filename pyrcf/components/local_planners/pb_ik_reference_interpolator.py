@@ -23,8 +23,8 @@ class PybulletIKReferenceInterpolator(LocalPlannerBase):
         self,
         urdf_path: str,
         floating_base: bool = False,
-        starting_base_position: Vector3D = np.zeros(3),
-        starting_base_orientation: QuatType = np.array([0, 0, 0, 1]),
+        starting_base_position: Vector3D = None,
+        starting_base_orientation: QuatType = None,
         starting_joint_positions: List[float] = None,
         joint_names_order: List[str] = None,
         filter_gain=0.05,
@@ -66,6 +66,12 @@ class PybulletIKReferenceInterpolator(LocalPlannerBase):
             **pb_ik_kwargs (optional): Additional keywork arguments to be used while creating the
                 PybulletIKInterface object.
         """
+        if starting_base_position is None:
+            starting_base_position = np.zeros(3)
+
+        if starting_base_orientation is None:
+            starting_base_orientation = np.array([0, 0, 0, 1])
+
         self._pb_ik = PybulletIKInterface(
             urdf_path=urdf_path,
             floating_base=floating_base,

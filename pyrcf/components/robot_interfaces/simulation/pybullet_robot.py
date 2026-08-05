@@ -17,7 +17,7 @@ from ....core.types import (
 )
 from ....utils.math_utils import quat2rot
 from ....utils.time_utils import ClockBase
-from ....core.logging import logging
+from ....core.logging import logger
 from ....utils.urdf_utils import (
     temp_path_urdf_with_joints_fixed,
     create_new_urdf_with_joints_fixed,
@@ -58,8 +58,8 @@ class PybulletRobot(SimulatedRobotInterface):
         urdf_path: str,
         ee_names: List[str] = None,
         place_on_ground: bool = True,
-        default_base_position: np.ndarray = np.zeros(3),
-        default_base_orientation: np.ndarray = np.array([0, 0, 0, 1]),
+        default_base_position: np.ndarray = None,
+        default_base_orientation: np.ndarray = None,
         default_joint_positions: np.ndarray = None,
         create_pinocchio_interface: bool = True,
         floating_base: bool = True,
@@ -101,6 +101,12 @@ class PybulletRobot(SimulatedRobotInterface):
         """
         if urdf_path is None:
             urdf_path = self.DEFAULT_URDF_PATH
+
+        if default_base_position is None:
+            default_base_position = np.zeros(3)
+
+        if default_base_orientation is None:
+            default_base_orientation = np.array([0, 0, 0, 1])
 
         sim_interface_kwargs["enable_torque_mode"] = sim_interface_kwargs.get(
             "enable_torque_mode", True
@@ -227,7 +233,7 @@ class PybulletRobot(SimulatedRobotInterface):
             )
             return True
         except Exception as e:  # pylint:disable=W0718
-            logging.exception(
+            logger.exception(
                 f"{__class__.__name__}: Control command could not be written to simulator. {e}"
                 f" Culprit {cmd}. len joints: {len(self._sim_robot.actuated_joint_names)}."
             )
@@ -301,8 +307,8 @@ class PybulletRobot(SimulatedRobotInterface):
         robot_description_name: str,
         ee_names: List[str] = None,
         place_on_ground: bool = True,
-        default_base_position: np.ndarray = np.zeros(3),
-        default_base_orientation: np.ndarray = np.array([0, 0, 0, 1]),
+        default_base_position: np.ndarray = None,
+        default_base_orientation: np.ndarray = None,
         default_joint_positions: np.ndarray = None,
         create_pinocchio_interface: bool = True,
         floating_base: bool = True,

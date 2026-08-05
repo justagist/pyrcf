@@ -1,5 +1,5 @@
 """Here we use actual implementations of control loop components instead of Dummy implementation,
-and run a proper balancing controller on a simulated 2-wheeled segway-type robot (upkie). 
+and run a proper balancing controller on a simulated 2-wheeled segway-type robot (upkie).
 
 It also shows how a RobotInterface instance of any robot can be created in pybullet for
 testing different controllers and planners.
@@ -22,12 +22,13 @@ from pyrcf.components.global_planners.ui_reference_generators import (
     DEFAULT_KEYBOARD_MAPPING,
 )
 from pyrcf.control_loop import SimpleManagedCtrlLoop
-from pyrcf.core.logging import logging
+from pyrcf.core.logging import logger, logging
 from pyrcf.core.exceptions import NotConnectedError
 
 from pybullet_robot.utils.robot_loader_utils import get_urdf_from_awesome_robot_descriptions
 
-logging.getLogger().setLevel(logging.DEBUG)
+# pyrcf logs through its own 'pyrcf' logger; it never touches the root logger
+logger.setLevel(logging.DEBUG)
 
 
 if __name__ == "__main__":
@@ -79,11 +80,11 @@ if __name__ == "__main__":
         global_planner = JoystickGlobalPlannerInterface(
             gamepad_mappings=DEFAULT_GAMEPAD_MAPPINGS, check_connection_at_init=True
         )
-        logging.info("Using Joystick interface.")
+        logger.info("Using Joystick interface.")
     except (IndexError, NotConnectedError):
         # if joystick not available, use keyboard interface (pygame window should
         # be in focus for commands to work)
-        logging.info("Could not detect joystick. Using Keyboard interface.")
+        logger.info("Could not detect joystick. Using Keyboard interface.")
         global_planner = KeyboardGlobalPlannerInterface(key_mappings=DEFAULT_KEYBOARD_MAPPING)
 
     # ** local planner **

@@ -12,7 +12,7 @@ from inputs import get_gamepad, UnpluggedError
 from .ui_base import UIBase
 from ....core.types import GlobalMotionPlan, RobotState
 from .key_mappings import DEFAULT_GAMEPAD_MAPPINGS, GamePadMappings
-from ....core.logging import logging
+from ....core.logging import logger
 from ....core.exceptions import NotConnectedError
 
 
@@ -22,7 +22,7 @@ class JoystickGlobalPlannerInterface(UIBase):
     def __init__(
         self,
         gamepad_mappings: GamePadMappings = DEFAULT_GAMEPAD_MAPPINGS,
-        default_global_plan: GlobalMotionPlan = GlobalMotionPlan(),
+        default_global_plan: GlobalMotionPlan = None,
         check_connection_at_init: bool = False,
     ):
         """A simple joystick interface following the GlobalMotionPlanner protocol.
@@ -53,14 +53,16 @@ class JoystickGlobalPlannerInterface(UIBase):
             self._keep_alive = False
             raise NotConnectedError("Could not find joystick.")
 
-        self._global_plan = default_global_plan
+        self._global_plan = (
+            GlobalMotionPlan() if default_global_plan is None else default_global_plan
+        )
         self._mappings = gamepad_mappings
 
     def _check_connection(self):
-        logging.info(f"{self.__class__.__name__}: Waiting for joystick...")
+        logger.info(f"{self.__class__.__name__}: Waiting for joystick...")
         try:
             get_gamepad()
-            logging.info(f"{self.__class__.__name__}: Joystick interface ready!")
+            logger.info(f"{self.__class__.__name__}: Joystick interface ready!")
             self._connection_verified = True
             return True
         except (IndexError, UnpluggedError):
@@ -158,7 +160,7 @@ class JoystickGlobalPlannerInterface(UIBase):
         if not self._keep_alive:
             self.shutdown()
             raise NotConnectedError("Could not read joystick input.")
-        elif not self._runner_thread.is_alive():
+        if not self._runner_thread.is_alive():
             self._runner_thread.start()
         return copy.deepcopy(self._global_plan)
 

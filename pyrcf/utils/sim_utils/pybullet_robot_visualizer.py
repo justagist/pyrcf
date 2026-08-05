@@ -9,7 +9,7 @@ import pybullet_robot
 from ...components.robot_interfaces.simulation.pybullet_robot import PybulletRobot
 from ..time_utils import RateLimiter
 from ..math_utils import rpy2quat, quat2rpy
-from ...core.logging import logging
+from ...core.logging import logger
 from ...components.callback_handlers.base_callbacks import RateTriggeredMultiCallbacks
 from ...components.callback_handlers.pb_gui_callbacks import (
     PbGUIButtonCallback,
@@ -119,7 +119,7 @@ class PybulletRobotVisualizer:
             assert callable(cb)
 
         if self.sim_robot._in_torque_mode:
-            logging.warning(
+            logger.warning(
                 "PybulletRobot should be in position control mode to use this visualiser."
                 " Changing to position control mode now."
             )
@@ -282,7 +282,7 @@ class PybulletRobotVisualizer:
 
             _reset_debug_params()
             rate_limiter = RateLimiter(sim_step_rate, warn=False)
-            logging.info(f"Starting {self.__class__.__name__} instance...")
+            logger.info(f"Starting {self.__class__.__name__} instance...")
             while self._ok_to_run:
                 for cb in gui_cbs.values():
                     cb.run_once()
@@ -297,15 +297,15 @@ class PybulletRobotVisualizer:
 
         self._read_button_thread = threading.Thread(target=_read_params_loop)
         self._read_button_thread.start()
-        logging.info(f"{self.__class__.__name__} running...")
+        logger.info(f"{self.__class__.__name__} running...")
 
     def close(self):
         """Close the visualizer."""
         self._ok_to_run = False
-        logging.info(f"Attempting to shut down {self.__class__.__name__} instance.")
+        logger.info(f"Attempting to shut down {self.__class__.__name__} instance.")
         if self._read_button_thread is not None:
             self._read_button_thread.join()
-        logging.info(f"Closed {self.__class__.__name__} instance.")
+        logger.info(f"Closed {self.__class__.__name__} instance.")
 
     @classmethod
     def fromBulletRobot(

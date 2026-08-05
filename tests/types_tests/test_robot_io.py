@@ -192,6 +192,32 @@ class TestEndEffectorStates:
             ],
         )
 
+    def test_extend_method_overwrite_existing(self, ee_obj: EndEffectorStates):
+        ee_s1 = copy.deepcopy(ee_obj)
+        ee_s2 = EndEffectorStates(
+            ee_names=["ee_2", "ee_4"],
+            ee_poses=[
+                Pose3D(position=np.ones(3) * 9, orientation=np.array([0, 1, 0, 0])),
+                Pose3D(position=np.ones(3) * 4, orientation=np.array([0, 1, 0, 0])),
+            ],
+            ee_twists=[
+                Twist(linear=np.ones(3) * 9, angular=np.zeros(3)),
+                Twist(linear=np.ones(3) * 4, angular=np.zeros(3)),
+            ],
+            contact_states=[1, 0],
+            contact_forces=[np.ones(3) * 9, np.ones(3) * 4],
+        )
+
+        ee_s1.extend(ee_s2, overwrite_existing=True)
+
+        # 'ee_2' is present in both; values from the second object win, and every attribute
+        # must stay the same length as `ee_names`
+        assert ee_s1.ee_names == ["ee_1", "ee_2", "ee_3", "ee_4"]
+        assert len(ee_s1.ee_poses) == len(ee_s1.ee_twists) == 4
+        assert len(ee_s1.contact_states) == len(ee_s1.contact_forces) == 4
+        assert np.all(ee_s1["ee_2"][0].position == np.ones(3) * 9)
+        assert np.all(ee_s1["ee_4"][0].position == np.ones(3) * 4)
+
     def test_update_from_method(self):
         ee_s1 = EndEffectorStates(
             ee_names=["ee_1", "ee_2", "ee_3", "ee_4", "ee_5", "ee_6"],
@@ -506,3 +532,62 @@ class TestRobotCmd:
 
         with pytest.raises(AssertionError, match=r".*should be positive.*"):
             cmd.Kd = -0.2
+
+    def test_extend_method(self):
+        cmd1: RobotCmd = RobotCmd.createZeros(2, ["j1", "j2"])
+        cmd1.Kp = [1.0, 2.0]
+        cmd1.Kd = [3.0, 4.0]
+        cmd1.joint_commands.joint_positions = np.array([0.1, 0.2])
+
+        cmd2: RobotCmd = RobotCmd.createZeros(2, ["j3", "j4"])
+        cmd2.Kp = [5.0, 6.0]
+        cmd2.Kd = [7.0, 8.0]
+        cmd2.joint_commands.joint_positions = np.array([0.3, 0.4])
+
+        cmd1.extend(cmd2)
+
+        assert cmd1.joint_commands.joint_names == ["j1", "j2", "j3", "j4"]
+        assert np.all(cmd1.Kp == np.array([1.0, 2.0, 5.0, 6.0]))
+        assert np.all(cmd1.Kd == np.array([3.0, 4.0, 7.0, 8.0]))
+        assert np.all(cmd1.joint_commands.joint_positions == np.array([0.1, 0.2, 0.3, 0.4]))
+
+    def test_extend_method_without_checks(self):
+        cmd1: RobotCmd = RobotCmd.createZeros(2, ["j1", "j2"])
+        cmd1.Kp = [1.0, 2.0]
+        cmd2: RobotCmd = RobotCmd.createZeros(2, ["j3", "j4"])
+        cmd2.Kp = [5.0, 6.0]
+
+        cmd1.extend(cmd2, run_checks=False)
+
+        assert cmd1.joint_commands.joint_names == ["j1", "j2", "j3", "j4"]
+        assert np.all(cmd1.Kp == np.array([1.0, 2.0, 5.0, 6.0]))
+
+    def test_extend_method_with_unset_gains(self):
+        cmd1 = RobotCmd(joint_commands=JointStates(joint_names=["j1"], joint_positions=[0.1]))
+        cmd2 = RobotCmd(joint_commands=JointStates(joint_names=["j2"], joint_positions=[0.2]))
+        assert cmd1.Kp is None and cmd2.Kp is None
+
+        cmd1.extend(cmd2)
+
+        assert cmd1.joint_commands.joint_names == ["j1", "j2"]
+        assert np.all(cmd1.Kp == np.zeros(2))
+        assert np.all(cmd1.Kd == np.zeros(2))
+
+    def test_extend_method_conflicting_joints(self):
+        cmd1: RobotCmd = RobotCmd.createZeros(2, ["j1", "j2"])
+        cmd2: RobotCmd = RobotCmd.createZeros(2, ["j2", "j3"])
+
+        with pytest.raises(AssertionError, match=r".*already present in current instance.*"):
+            copy.deepcopy(cmd1).extend(cmd2)
+
+    def test_extend_method_overwrite_existing(self):
+        cmd1: RobotCmd = RobotCmd.createZeros(2, ["j1", "j2"])
+        cmd1.Kp = [1.0, 2.0]
+        cmd2: RobotCmd = RobotCmd.createZeros(2, ["j2", "j3"])
+        cmd2.Kp = [20.0, 30.0]
+
+        cmd1.extend(cmd2, overwrite_existing=True)
+
+        # 'j2' is commanded by both; the later command wins
+        assert cmd1.joint_commands.joint_names == ["j1", "j2", "j3"]
+        assert np.all(cmd1.Kp == np.array([1.0, 20.0, 30.0]))

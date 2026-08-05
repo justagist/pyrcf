@@ -10,7 +10,7 @@ Abstract base class for all core components in PyRCF control loop.
 """
 
 from abc import ABC
-from ..core.logging import logging
+from ..core.logging import logger
 
 
 class PyRCFComponent(ABC):
@@ -27,7 +27,7 @@ class PyRCFComponent(ABC):
     def shutdown(self):
         """Cleanly shutdown the PyRCF component. Override in child class if required. The
         base class implements an empty function."""
-        logging.info(f"{self.__class__.__name__}: Shutting down.")
+        logger.info(f"{self.__class__.__name__}: Shutting down.")
 
     def get_class_name(self) -> str:
         """Get the name of the class/type of this object."""

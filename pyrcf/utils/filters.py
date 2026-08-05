@@ -125,11 +125,16 @@ def low_pass_filter(
     """
     if cutoff_period is None or dt is None:
         alpha = 0.499
+    elif cutoff_period == 0.0:
+        # a zero time constant means no filtering at all
+        return new_input
     else:
-        if cutoff_period is None or cutoff_period == 0.0:
-            cutoff_period = 1e-6
         alpha = dt / cutoff_period
-        assert alpha < 0.5  # Nyquist-Shannon sampling theorem
+        assert alpha < 0.5, (  # Nyquist-Shannon sampling theorem
+            f"low_pass_filter: dt/cutoff_period must be < 0.5 to avoid aliasing, but got "
+            f"{dt}/{cutoff_period} = {alpha}. Check the argument order: this function takes "
+            "(prev_output, new_input, dt, cutoff_period)."
+        )
     return first_order_filter(current_value=prev_output, desired_value=new_input, gain=alpha)
 
 

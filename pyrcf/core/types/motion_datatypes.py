@@ -116,8 +116,7 @@ def _get_closest_timestamp_idx(
         or np.fabs(t - timestamps[idx - 1]) <= np.fabs(t - timestamps[idx])
     ):
         return idx - 1
-    else:
-        return idx
+    return idx
 
 
 @dataclass

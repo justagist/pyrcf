@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 from numbers import Number
 
-from ...core.logging import logging
+from ...core.logging import logger
 
 
 def rgetattr(obj, attr, *args):
@@ -44,20 +44,19 @@ def rgetattr(obj, attr, *args):
                 else _getattr(n_obj[0], remaining)
             )
 
-        else:
-            if isinstance(obj, (list, tuple)):
-                return (
-                    [getattr(o, attr, *args) for o in obj]
-                    if len(obj) > 1
-                    else getattr(obj[0], attr, *args)
-                )
-            if isinstance(obj, np.ndarray):
-                return np.array(
-                    [getattr(o, attr, *args) for o in obj]
-                    if len(obj) > 1
-                    else getattr(obj[0], attr, *args)
-                )
-            return getattr(obj, attr, *args)
+        if isinstance(obj, (list, tuple)):
+            return (
+                [getattr(o, attr, *args) for o in obj]
+                if len(obj) > 1
+                else getattr(obj[0], attr, *args)
+            )
+        if isinstance(obj, np.ndarray):
+            return np.array(
+                [getattr(o, attr, *args) for o in obj]
+                if len(obj) > 1
+                else getattr(obj[0], attr, *args)
+            )
+        return getattr(obj, attr, *args)
 
     return functools.reduce(_getattr, [obj] + attr.split("."))
 
@@ -93,7 +92,7 @@ class ComponentDataRecorderDataParser:
         }
         self._keys = list(self._data.keys())
         self._data_length = 0
-        logging.info("Parsing data...")
+        logger.info("Parsing data...")
         with open(self._filename, "rb") as f:
             while True:
                 try:
@@ -109,7 +108,7 @@ class ComponentDataRecorderDataParser:
                         self._data_length += 1
                 except EOFError:
                     break
-        logging.info(f"Data parsing complete. Loaded data of length {self._data_length}.")
+        logger.info(f"Data parsing complete. Loaded data of length {self._data_length}.")
 
     @property
     def num_datapoints(self):
@@ -135,7 +134,7 @@ class ComponentDataRecorderDataParser:
                 "robot_cmd", "debug_data"]
         """
         if self._data is None:
-            logging.info("Data was not loaded from file. Loading now...")
+            logger.info("Data was not loaded from file. Loading now...")
             self.load_data()
         return self._data
 
@@ -199,8 +198,6 @@ class ComponentDataRecorderDataParser:
                         f"Error trying to retrive field {field_name} for key: {key_name}"
                     ) from exc
 
-        if as_ndarray_if_possible and (
-            isinstance(output_list[0], np.ndarray) or isinstance(output_list[0], Number)
-        ):
+        if as_ndarray_if_possible and (isinstance(output_list[0], (np.ndarray, Number))):
             output_list = np.array(output_list)
         return output_list

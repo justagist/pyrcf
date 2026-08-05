@@ -13,7 +13,7 @@ from ..components.state_estimators.state_estimator_base import (
 from .simple_managed_ctrl_loop import SimpleManagedCtrlLoop
 from ..components.agents.planner_controller_agent import PlannerControllerAgent
 from ..components.controller_manager.simple_controller_manager import SimpleControllerManager
-from ..core.logging import logging
+from ..core.logging import logger
 from ..core.exceptions import NotConnectedError
 
 
@@ -66,8 +66,8 @@ class MinimalCtrlLoop(SimpleManagedCtrlLoop):
         robot_interface: RobotInterface,
         controller: ControllerBase,
         global_planner: GlobalMotionPlannerBase = None,
-        local_planner: LocalPlannerBase = BlindForwardingPlanner(),
-        state_estimator: StateEstimatorBase = DummyStateEstimator(squawk=False),
+        local_planner: LocalPlannerBase = None,
+        state_estimator: StateEstimatorBase = None,
         verbose: bool = True,
     ) -> "MinimalCtrlLoop":
         """Create a control loop default values for planners and state estimators.
@@ -92,12 +92,18 @@ class MinimalCtrlLoop(SimpleManagedCtrlLoop):
                 automatically defined.
         """
 
+        if local_planner is None:
+            local_planner = BlindForwardingPlanner()
+
+        if state_estimator is None:
+            state_estimator = DummyStateEstimator(squawk=False)
+
         if global_planner is None:
             try:
                 global_planner = JoystickGlobalPlannerInterface(check_connection_at_init=True)
-                logging.info("Using Joystick interface.")
+                logger.info("Using Joystick interface.")
             except (IndexError, NotConnectedError):
-                logging.info("Could not detect joystick. Using Keyboard interface.")
+                logger.info("Could not detect joystick. Using Keyboard interface.")
                 global_planner = KeyboardGlobalPlannerInterface()
 
         return cls(

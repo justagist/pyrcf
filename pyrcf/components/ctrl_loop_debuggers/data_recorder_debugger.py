@@ -4,7 +4,7 @@ import pickle
 from ...core.types import LocalMotionPlan, GlobalMotionPlan, RobotCmd, RobotState
 from ...utils.time_utils import ClockBase, PythonPerfClock
 from .ctrl_loop_debugger_base import CtrlLoopDebuggerBase
-from ...core.logging import logging
+from ...core.logging import logger
 
 
 class ComponentDataRecorderDebugger(CtrlLoopDebuggerBase):
@@ -47,7 +47,10 @@ class ComponentDataRecorderDebugger(CtrlLoopDebuggerBase):
         """
         super().__init__(rate, clock)
 
-        self._file = open(file_name, "wb")
+        # NOTE: the file is owned for the lifetime of this debugger (records are appended on every
+        # control loop iteration), so a `with` block is not applicable here. It is closed in
+        # `shutdown()`, which the control loop guarantees to call on every exit path.
+        self._file = open(file_name, "wb")  # pylint: disable=consider-using-with
 
         self._additional_handles = []
         if extra_data_callables is not None:
@@ -100,5 +103,5 @@ class ComponentDataRecorderDebugger(CtrlLoopDebuggerBase):
                 self._buffer,
                 self._file,
             )
-        logging.info(f"Saved data to file: {self._file.name}")
+        logger.info(f"Saved data to file: {self._file.name}")
         self._file.close()

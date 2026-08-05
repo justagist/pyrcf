@@ -11,8 +11,10 @@ from .key_mappings import DEFAULT_KEYBOARD_MAPPING
 from .ui_utils import get_keymapping_doc
 
 
-def blit_multiline_text(surface, text, pos, font, line_spacing=3, color=pygame.Color("white")):
+def blit_multiline_text(surface, text, pos, font, line_spacing=3, color=None):
     """Function to display multiline text in pygame screen."""
+    if color is None:
+        color = pygame.Color("white")
     # 2D array where each row is a list of words.
     words = [word.split(" ") for word in text.splitlines()]
     x, y = pos
@@ -41,7 +43,7 @@ class KeyboardGlobalPlannerInterface(UIBase):
     def __init__(
         self,
         key_mappings: Dict[str, Callable[[GlobalMotionPlan], GlobalMotionPlan]] = None,
-        default_global_plan: GlobalMotionPlan = GlobalMotionPlan(),
+        default_global_plan: GlobalMotionPlan = None,
         window_size: Tuple[int, int] = (1000, 1000),
         parallel_mode: bool = False,
         verbose: bool = False,
@@ -67,7 +69,9 @@ class KeyboardGlobalPlannerInterface(UIBase):
             verbose (bool): If true, will print command on console every time user inputs a valid
                 key.
         """
-        self._global_plan = default_global_plan
+        self._global_plan = (
+            GlobalMotionPlan() if default_global_plan is None else default_global_plan
+        )
         self._key_mappings = key_mappings if key_mappings is not None else DEFAULT_KEYBOARD_MAPPING
         self._parallel_mode = parallel_mode
         self._verbose = verbose

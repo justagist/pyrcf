@@ -19,9 +19,10 @@ using keyboard (or joystick if connected) and make it move in the simulation.
 from pyrcf.components.controllers import SegwayPIDBalanceController
 from pyrcf.components.robot_interfaces.simulation import PybulletRobot
 from pyrcf.control_loop import MinimalCtrlLoop
-from pyrcf.core.logging import logging
+from pyrcf.core.logging import logger, logging
 
-logging.getLogger().setLevel(logging.DEBUG)
+# pyrcf logs through its own 'pyrcf' logger; it never touches the root logger
+logger.setLevel(logging.DEBUG)
 
 
 if __name__ == "__main__":

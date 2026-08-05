@@ -1,6 +1,6 @@
 # PyRCF -- Basic Concepts
 
-LMCF follows the principle of a single thread control loop where components are communicating with each other strictly using pre-defined message types,
+PyRCF follows the principle of a single thread control loop where components are communicating with each other strictly using pre-defined message types,
 and run sequentially.
 
 ## Example of a generic control loop
@@ -70,7 +70,7 @@ while True:
 
 ### On clock, time and frequencies
 
-1. To avoid synch issues, memory issues and other deadlock issues, control loops are typically written in one thread without parallelisation (such as the ROS control framework). LMCF follows this principle. (NOTE: Typically, planners run in a different thread, however, here we include them in the same thread for simplicity, and since the simplest planners are essentially instantaneous reference generators for controllers.)
+1. To avoid synch issues, memory issues and other deadlock issues, control loops are typically written in one thread without parallelisation (such as the ROS control framework). PyRCF follows this principle. (NOTE: Typically, planners run in a different thread, however, here we include them in the same thread for simplicity, and since the simplest planners are essentially instantaneous reference generators for controllers.)
 
     This way of keeping the control loop as a single sequence thread is mostly very good, and leads to clear code structure, and usually allows in-place replacement of individual components in the control loop.
 
@@ -82,11 +82,11 @@ while True:
 
 2. The control loop should run as fast as the demand of the `robot.write()` method for stable control. This is the fastest loop (there are cases where the main loop can run faster than the robot I/O, but this is not common). The controller is typically the next most demanding, followed by the local planner and then the global planner (out of scope of this library).
 
-3. Typically for ensuring all components use the same clock, control frameworks share a common clock, or pass time (and dt) in each loop to the component at every time step. In LMCF, follow this philosophy to enforce synchronisation.
+3. Typically for ensuring all components use the same clock, control frameworks share a common clock, or pass time (and dt) in each loop to the component at every time step. In PyRCF, follow this philosophy to enforce synchronisation.
 
 ### Notes on design/architecture and implementation
 
-This section covers details that are specific to LMCF library.
+This section covers details that are specific to PyRCF library.
 
 - All components are defined and restricted to use specific input-output function signatures (defined in their corresponding base/interface classes), but are free to do any implementation within their individual classes.
 - There are 3 cartesian coordinate frames used in this architecture:

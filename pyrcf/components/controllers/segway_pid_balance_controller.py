@@ -20,6 +20,7 @@ from ...core.types import ControlMode, LocalMotionPlan, RobotCmd, RobotState
 from ...utils.math_utils import quat2rpy
 from ...utils.filters import abs_bounded_derivative_filter, low_pass_filter
 from ...utils.kinematics_dynamics.pinocchio_interface import PinocchioInterface
+from ...core.logging import throttled_logging
 
 
 class SegwayPIDBalanceController(ControllerBase):
@@ -64,7 +65,7 @@ class SegwayPIDBalanceController(ControllerBase):
     def __init__(
         self,
         pinocchio_interface: PinocchioInterface,
-        gains: Gains = Gains(),
+        gains: Gains = None,
         air_return_period: float = 1.0,
         fall_pitch: float = 1.0,
         max_ground_velocity: float = 2.0,
@@ -78,10 +79,10 @@ class SegwayPIDBalanceController(ControllerBase):
         turning_decision_time: float = 0.2,
         wheel_radius: float = 0.06,
         wheel_distance: float = 0.3048,
-        wheel_ee_ids: List[int] = [0, 1],
-        wheel_joint_ids: List[int] = [2, 5],
-        wheel_joint_directions: List[int] = [1, -1],
-        joint_torque_limits: List[float] = [-1.0, 1.0],
+        wheel_ee_ids: List[int] = None,
+        wheel_joint_ids: List[int] = None,
+        wheel_joint_directions: List[int] = None,
+        joint_torque_limits: List[float] = None,
     ):
         """A simple PD balance controller for a 2-wheel segway type robot.
 
@@ -111,6 +112,18 @@ class SegwayPIDBalanceController(ControllerBase):
             wheel_radius: Wheel radius in [m].
         """
         assert 0.0 <= turning_deadband <= 1.0
+
+        if gains is None:
+            gains = self.Gains()
+        if wheel_ee_ids is None:
+            wheel_ee_ids = [0, 1]
+        if wheel_joint_ids is None:
+            wheel_joint_ids = [2, 5]
+        if wheel_joint_directions is None:
+            wheel_joint_directions = [1, -1]
+        if joint_torque_limits is None:
+            joint_torque_limits = [-1.0, 1.0]
+
         self.air_return_period = air_return_period
         self.fall_pitch = fall_pitch
         self.gains = gains
@@ -207,9 +220,19 @@ class SegwayPIDBalanceController(ControllerBase):
         # NOTE: also this is averaging over all end-effector poses (will break if
         # the robot has end-effectors other than wheels)
         ground_position = np.mean([ee_pose[0][0] for ee_pose in self._pin.get_ee_poses()])
-        floor_contact = np.any(
-            robot_state.state_estimates.contact_states[i] for i in self.wheel_ee_ids
-        )
+
+        contact_states = robot_state.state_estimates.end_effector_states.contact_states
+        if contact_states is None:
+            # without contact information takeoff cannot be detected; assume the wheels are
+            # grounded rather than silently letting the integrators drift
+            throttled_logging.warning(
+                f"{self.__class__.__name__}: No end-effector contact states available in the"
+                " robot state. Assuming the wheels are on the ground.",
+                delay_sec=5.0,
+            )
+            floor_contact = True
+        else:
+            floor_contact = bool(np.any([contact_states[i] for i in self.wheel_ee_ids]))
 
         error = np.array(
             [
@@ -219,18 +242,24 @@ class SegwayPIDBalanceController(ControllerBase):
         )
 
         if not floor_contact:
+            # NOTE: arguments are passed by keyword deliberately -- this function takes
+            # (prev_output, new_input, dt, cutoff_period), which is a different order to the
+            # equivalent helper in the upstream upkie code this controller was adapted from.
             self.integral_error_velocity = low_pass_filter(
-                self.integral_error_velocity, self.air_return_period, 0.0, dt
+                prev_output=self.integral_error_velocity,
+                new_input=0.0,
+                dt=dt,
+                cutoff_period=self.air_return_period,
             )
             # We don't reset self.target_ground_velocity: either takeoff
             # detection is a false positive and we should resume close to the
             # pre-takeoff state, or the robot is really in the air and the user
             # should stop smashing the joystick like a bittern ;p
             self.target_ground_position = low_pass_filter(
-                self.target_ground_position,
-                self.air_return_period,
-                ground_position,
-                dt,
+                prev_output=self.target_ground_position,
+                new_input=ground_position,
+                dt=dt,
+                cutoff_period=self.air_return_period,
             )
         else:  # floor_contact:
             self.integral_error_velocity += self.ki_ground_vel.dot(error) * dt

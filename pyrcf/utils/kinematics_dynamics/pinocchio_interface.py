@@ -27,7 +27,6 @@ from typing import List, Tuple, TypeAlias, Sequence, Mapping
 import pinocchio
 import numpy as np
 
-
 QuatType: TypeAlias = np.ndarray
 """Numpy array representating quaternion in format [x,y,z,w]"""
 Vector3D: TypeAlias = np.ndarray
@@ -479,9 +478,8 @@ class PinocchioInterface(pinocchio.RobotWrapper):
     def get_frame_position(self, frame_name: str, reference_frame: str = "world") -> Vector3D:
         if reference_frame == "world":
             return self.framePlacement(self.q, self.get_frame_id(frame_name)).translation
-        else:
-            transform = self.get_frame_transformation(frame_name, reference_frame=reference_frame)
-            return transform[:3, 3]
+        transform = self.get_frame_transformation(frame_name, reference_frame=reference_frame)
+        return transform[:3, 3]
 
     def get_global_frame_pose(self, frame_name: str) -> Tuple[Vector3D, QuatType]:
         frame_transform = self.framePlacement(self.q, self.get_frame_id(frame_name))
@@ -509,9 +507,8 @@ class PinocchioInterface(pinocchio.RobotWrapper):
     def get_frame_rotation(self, frame_name: str, reference_frame: str = "world") -> np.ndarray:
         if reference_frame == "world":
             return self.framePlacement(self.q, self.get_frame_id(frame_name)).rotation
-        else:
-            transform = self.get_frame_transformation(frame_name, reference_frame=reference_frame)
-            return transform[:3, :3]
+        transform = self.get_frame_transformation(frame_name, reference_frame=reference_frame)
+        return transform[:3, :3]
 
     def get_frame_quaternion(self, frame_name: str, reference_frame: str = "world") -> QuatType:
         return pinocchio.Quaternion(self.get_frame_rotation(frame_name, reference_frame)).coeffs()
@@ -545,8 +542,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                 self.get_frame_rotation(frame_name)
                 @ self.frameVelocity(self.q, self.v, self.get_frame_id(frame_name)).linear
             )
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_velocity_angular(
         self, frame_name: str, reference_frame: str = "world"
@@ -556,8 +552,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                 self.get_frame_rotation(frame_name)
                 @ self.frameVelocity(self.q, self.v, self.get_frame_id(frame_name)).angular
             )
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_acceleration_linear(
         self, frame_name: str, reference_frame: str = "world"
@@ -569,8 +564,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                     self.q, self.v, self.a, self.get_frame_id(frame_name)
                 ).linear
             )
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_acceleration_angular(
         self, frame_name: str, reference_frame: str = "world"
@@ -582,8 +576,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                     self.q, self.v, self.a, self.get_frame_id(frame_name)
                 ).angular
             )
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_jacobian(self, frame_name: str, reference_frame: str = "world") -> np.ndarray:
         if reference_frame == "world":
@@ -591,8 +584,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                 self.get_frame_id(frame_name),
                 pinocchio.ReferenceFrame.LOCAL_WORLD_ALIGNED,
             )
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_jacobian_linear(
         self, frame_name: str, reference_frame: str = "world"
@@ -602,8 +594,7 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                 self.get_frame_id(frame_name),
                 pinocchio.ReferenceFrame.LOCAL_WORLD_ALIGNED,
             )[:3, :]
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")
 
     def get_frame_jacobian_angular(
         self, frame_name: str, reference_frame: str = "world"
@@ -613,5 +604,4 @@ class PinocchioInterface(pinocchio.RobotWrapper):
                 self.get_frame_id(frame_name),
                 pinocchio.ReferenceFrame.LOCAL_WORLD_ALIGNED,
             )[-3:, :]
-        else:
-            raise RuntimeError("reference_frame not implemented")
+        raise RuntimeError("reference_frame not implemented")

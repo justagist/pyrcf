@@ -57,6 +57,31 @@ After installation, you should be able to run a robot visualiser script installe
 argument as any of the robot descriptions mentioned in the [robot_descriptions.py repo](https://github.com/robot-descriptions/robot_descriptions.py/tree/main?tab=readme-ov-file#descriptions); e.g. `pyrcf-visualise-robot pepper_description`. This should
 start a visualiser in pybullet, where you should be able to move all robot joints and base pose using sliders in the pybullet GUI.
 
+Pass a urdf path instead of a description name to visualise your own robot, add `--floating-base` to load it
+with a free-floating base, and run `pyrcf-visualise-robot --help` for all options.
+
+## Quick start
+
+The names needed to build a control loop are available directly from the top-level package:
+
+```python
+from pyrcf import MinimalCtrlLoop, PybulletRobot, JointPDController, JointReferenceInterpolator
+
+robot = PybulletRobot.fromAwesomeRobotDescriptions(robot_description_name="ur5_description")
+
+control_loop = MinimalCtrlLoop.useWithDefaults(
+    robot_interface=robot,
+    controller=JointPDController(kp=100.0, kd=1.0),
+    local_planner=JointReferenceInterpolator(),
+)
+
+# Ctrl+C shuts every component down cleanly
+control_loop.run(loop_rate=200)
+```
+
+Everything is also importable from its defining submodule (e.g. `pyrcf.components.controllers`),
+which is where the less commonly used components live.
+
 ## Usage demos
 
 All the demos shown below are available in the `examples` folder of this repo.

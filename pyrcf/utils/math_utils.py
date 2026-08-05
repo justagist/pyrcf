@@ -9,8 +9,8 @@ Vector3D: TypeAlias = np.ndarray
 
 
 def transformation_matrix(
-    position: Vector3D = np.array([0, 0, 0]),
-    orientation: QuatType = np.array([0, 0, 0, 1]),
+    position: Vector3D = None,
+    orientation: QuatType = None,
 ) -> np.ndarray:
     """Create a 4x4 transformation matrix
 
@@ -22,6 +22,10 @@ def transformation_matrix(
     Returns:
         np.ndarray: 4x4 transformation matrix representing this pose.
     """
+    if position is None:
+        position = np.zeros(3)
+    if orientation is None:
+        orientation = np.array([0, 0, 0, 1])
     mat = np.eye(4)
     mat[:3, :3] = quat2rot(quaternion=orientation)
     mat[:3, 3] = position

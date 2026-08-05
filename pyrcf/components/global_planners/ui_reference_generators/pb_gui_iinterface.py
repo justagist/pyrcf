@@ -25,7 +25,7 @@ from ...callback_handlers.pb_gui_callbacks import (
 )
 from ...callback_handlers.base_callbacks import RateTriggeredMultiCallbacks
 from ....utils.time_utils import PythonPerfClock, ClockBase
-from ....core.logging import logging
+from ....core.logging import logger
 from ....utils.math_utils import quat2rpy, rpy2quat
 from ....utils.sim_utils.pybullet_debug_robot import PbDebugRobotWithJointCallback
 
@@ -250,7 +250,7 @@ class PybulletGUIGlobalPlannerInterface(UIBase):
                             )
                         )
                     except (AttributeError, KeyError):
-                        logging.warning(
+                        logger.warning(
                             f"Starting pose of end-effector '{ee_name}' not found in state estimate. Using zeros as starting pose instead."
                         )
                         des_pose = Pose3D()

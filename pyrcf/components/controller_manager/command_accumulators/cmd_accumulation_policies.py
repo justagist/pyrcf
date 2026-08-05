@@ -20,7 +20,7 @@ class CommandAccumulatorBase(ABC):
     accumulation at robot-level instead."""
 
     @abstractmethod
-    def accumulate(self, commands=List[RobotCmd]) -> RobotCmd:
+    def accumulate(self, commands: List[RobotCmd]) -> RobotCmd:
         """Accumulate the specified commands into a single command to be sent to the robot.
 
         Args:
@@ -39,7 +39,7 @@ class SimpleCmdOverride(CommandAccumulatorBase):
     """This accumulation policy simply overrides the command from all controllers with the latest
     one."""
 
-    def accumulate(self, commands=List[RobotCmd]) -> RobotCmd:
+    def accumulate(self, commands: List[RobotCmd]) -> RobotCmd:
         return commands[-1]
 
 
@@ -47,13 +47,20 @@ class CmdMuxer(CommandAccumulatorBase):
     """This policy combines the commands from all controllers/agents."""
 
     def __init__(self, allow_conflicting_interfaces: bool = False):
-        self._cmd: RobotCmd = None
+        """Constructor.
+
+        Args:
+            allow_conflicting_interfaces (bool, optional): If set to True, agents are allowed to
+                command the same joint; the command from the later agent in the sequence wins.
+                If False (default), an agent commanding a joint that an earlier agent already
+                commands raises an AssertionError. Defaults to False.
+        """
         self._allow_conflicts = allow_conflicting_interfaces
 
-    def accumulate(self, commands=List[RobotCmd]) -> RobotCmd:
-        # return super().accumulate(commands)
-        if self._cmd is None:
-            self._cmd = copy.deepcopy(commands[0])
-            if len(commands) > 1:
-                for cmd in commands[1:]:
-                    self._cmd.extend(cmd, run_checks=True, override_existing=self._allow_conflicts)
+    def accumulate(self, commands: List[RobotCmd]) -> RobotCmd:
+        # NOTE: the accumulated command has to be rebuilt from scratch on every call; caching it
+        # across control loop iterations would keep sending the first iteration's command forever.
+        accumulated = copy.deepcopy(commands[0])
+        for cmd in commands[1:]:
+            accumulated.extend(other=cmd, run_checks=True, overwrite_existing=self._allow_conflicts)
+        return accumulated

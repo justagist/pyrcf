@@ -1,6 +1,6 @@
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 
-from ..core.logging import logging
+from ..core.logging import logger
 from ..core.exceptions import CtrlLoopExitSignal
 from ..components.robot_interfaces.robot_interface_base import RobotInterface
 from ..components.controller_manager.controller_manager_base import ControllerManagerBase
@@ -77,7 +77,7 @@ class SimpleManagedCtrlLoop:
             for n, agent in enumerate(self.controller_manager.agents):
                 msg += f"\t\tAgent {n+1}: {agent.get_class_info()}\n"
             msg += "----------------------------------------------------------------------------\n"
-            logging.info(msg=msg)
+            logger.info(msg=msg)
 
     def run(
         self,
@@ -114,85 +114,126 @@ class SimpleManagedCtrlLoop:
         for cb in prestep_callbacks + poststep_callbacks:
             assert isinstance(cb, CustomCallbackBase)
 
-        logging.info(f"{self.__class__.__name__}: Activating robot...")
-        while not self.robot.activate():
-            continue
-        logging.info(f"{self.__class__.__name__}: Robot activated.")
+        try:
+            logger.info(f"{self.__class__.__name__}: Activating robot...")
+            while not self.robot.activate():
+                continue
+            logger.info(f"{self.__class__.__name__}: Robot activated.")
 
-        rate = RateLimiter(frequency=loop_rate, name="control loop", clock=PythonPerfClock())
-        start_t: float = clock.get_time()
-        prev_t: float = clock.get_time() - start_t
-        while True:
-            try:
-                curr_t: float = clock.get_time() - start_t
-                dt: float = curr_t - prev_t
+            rate = RateLimiter(frequency=loop_rate, name="control loop", clock=PythonPerfClock())
+            start_t: float = clock.get_time()
+            prev_t: float = clock.get_time() - start_t
+            while True:
+                try:
+                    curr_t: float = clock.get_time() - start_t
+                    dt: float = curr_t - prev_t
 
-                self._loop_count += 1
-                self._true_dt = self._true_dt_getter.get_dt()
+                    self._loop_count += 1
+                    self._true_dt = self._true_dt_getter.get_dt()
 
-                for cb in prestep_callbacks:
-                    cb.run_once()
+                    for cb in prestep_callbacks:
+                        cb.run_once()
 
-                # read latest robot state
-                robot_state = self.robot.read()
+                    # read latest robot state
+                    robot_state = self.robot.read()
 
-                # use state estimator to compute robot states that are not directly observable from
-                # the robot interface such as robot pose in the world, base velocity, foot contact
-                # states, etc.
-                robot_state = self.state_estimator.update_robot_state_with_state_estimates(
-                    robot_state=robot_state, t=curr_t, dt=dt
-                )
+                    # use state estimator to compute robot states that are not directly observable
+                    # from the robot interface such as robot pose in the world, base velocity, foot
+                    # contact states, etc.
+                    robot_state = self.state_estimator.update_robot_state_with_state_estimates(
+                        robot_state=robot_state, t=curr_t, dt=dt
+                    )
 
-                # generate global plan for local planner
-                global_plan = self.global_planner.generate_global_plan(
-                    robot_state=robot_state, t=curr_t, dt=dt
-                )
+                    # generate global plan for local planner
+                    global_plan = self.global_planner.generate_global_plan(
+                        robot_state=robot_state, t=curr_t, dt=dt
+                    )
 
-                # use the local plan to generate instantaneous command to be sent to the robot
-                cmd = self.controller_manager.update(
-                    robot_state=robot_state, global_plan=global_plan, t=curr_t, dt=dt
-                )
+                    # use the local plan to generate instantaneous command to be sent to the robot
+                    cmd = self.controller_manager.update(
+                        robot_state=robot_state, global_plan=global_plan, t=curr_t, dt=dt
+                    )
 
-                # write the commands to the robot
-                self.robot.write(cmd=cmd)
+                    # write the commands to the robot
+                    self.robot.write(cmd=cmd)
 
-                if debuggers is not None:
-                    agent_outputs = [
-                        agent.get_last_output() for agent in self.controller_manager.agents
-                    ]
-                    for debugger in debuggers:
-                        debugger.run_once(
-                            t=curr_t,
-                            dt=dt,
-                            robot_state=robot_state,
-                            global_plan=global_plan,
-                            agent_outputs=agent_outputs,
-                            robot_cmd=cmd,
-                        )
+                    if debuggers is not None:
+                        agent_outputs = [
+                            agent.get_last_output() for agent in self.controller_manager.agents
+                        ]
+                        for debugger in debuggers:
+                            debugger.run_once(
+                                t=curr_t,
+                                dt=dt,
+                                robot_state=robot_state,
+                                global_plan=global_plan,
+                                agent_outputs=agent_outputs,
+                                robot_cmd=cmd,
+                            )
 
-                for cb in poststep_callbacks:
-                    cb.run_once()
+                    for cb in poststep_callbacks:
+                        cb.run_once()
 
-                prev_t = curr_t
+                    prev_t = curr_t
 
-                rate.sleep()
-            except (KeyboardInterrupt, CtrlLoopExitSignal):
-                logging.info(
-                    "Received control loop exit signal. Attempting shutdown of components..."
-                )
-                logging.info(f"{self.__class__.__name__}: Deactivating robot...")
-                while not self.robot.deactivate():
-                    continue
-                logging.info(f"{self.__class__.__name__}: Robot deactivated.")
-                self.shutdown()
-                break
+                    rate.sleep()
+                except (KeyboardInterrupt, CtrlLoopExitSignal):
+                    logger.info(
+                        "Received control loop exit signal. Attempting shutdown of components..."
+                    )
+                    break
+        finally:
+            # NOTE: this runs for *any* exit path -- clean exit signal, or an error raised by any
+            # component (e.g. a controller detecting a fall). Components must always be released,
+            # otherwise simulator connections, input threads and open recording files are leaked.
+            self._shutdown_all(
+                debuggers=debuggers, callbacks=prestep_callbacks + poststep_callbacks
+            )
 
-        if debuggers is not None:
-            for debugger in debuggers:
-                debugger.shutdown()
+    @staticmethod
+    def _try_shutdown_step(description: str, step: Callable[[], None]):
+        """Run one shutdown step, logging any error instead of propagating it, so that a failure
+        in one component cannot prevent the remaining components from being shut down.
 
-        for cb in prestep_callbacks + poststep_callbacks:
-            cb.cleanup()
+        Args:
+            description (str): Description of the step, used in the error message if it fails.
+            step (Callable[[], None]): The shutdown step to run.
+        """
+        try:
+            step()
+        except Exception:  # pylint: disable=broad-exception-caught
+            logger.exception(f"Error while {description}. Continuing with remaining shutdown.")
+
+    def _shutdown_all(
+        self,
+        debuggers: List[CtrlLoopDebuggerBase] = None,
+        callbacks: List[CustomCallbackBase] = None,
+    ):
+        """Deactivate the robot and shut down every component used by the control loop.
+
+        Args:
+            debuggers (List[CtrlLoopDebuggerBase], optional): Debuggers used in the loop.
+                Defaults to None.
+            callbacks (List[CustomCallbackBase], optional): Callbacks used in the loop.
+                Defaults to None.
+        """
+
+        def _deactivate_robot():
+            logger.info(f"{self.__class__.__name__}: Deactivating robot...")
+            while not self.robot.deactivate():
+                continue
+            logger.info(f"{self.__class__.__name__}: Robot deactivated.")
+
+        self._try_shutdown_step("deactivating robot", _deactivate_robot)
+        self._try_shutdown_step("shutting down control loop components", self.shutdown)
+
+        for debugger in debuggers or []:
+            self._try_shutdown_step(
+                f"shutting down debugger {debugger.__class__.__name__}", debugger.shutdown
+            )
+
+        for cb in callbacks or []:
+            self._try_shutdown_step(f"cleaning up callback {cb.__class__.__name__}", cb.cleanup)
 
     def get_actual_loop_rate(self) -> Tuple[float, float]:
         """Get the true loop rate and dt (using system clock).
@@ -217,11 +258,11 @@ class SimpleManagedCtrlLoop:
             - controller manager
             - global planner
         """
-        logging.info(f"{self.__class__.__name__}: Shutting down.")
+        logger.info(f"{self.__class__.__name__}: Shutting down.")
         self.robot.shutdown()
         self.controller_manager.shutdown()
         self.global_planner.shutdown()
-        logging.info(f"{self.__class__.__name__}: Control loop shut down complete.")
+        logger.info(f"{self.__class__.__name__}: Control loop shut down complete.")
 
     def send_shutdown_signal(self):
         """Request clean shutdown of control loop and components."""
