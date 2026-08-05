@@ -1,8 +1,4 @@
 from ..components.robot_interfaces.robot_interface_base import RobotInterface
-from ..components.global_planners.ui_reference_generators import (
-    KeyboardGlobalPlannerInterface,
-    JoystickGlobalPlannerInterface,
-)
 from ..components.controllers.controller_base import ControllerBase
 from ..components.local_planners import LocalPlannerBase, BlindForwardingPlanner
 from ..components.global_planners.global_planner_base import GlobalMotionPlannerBase
@@ -99,6 +95,14 @@ class MinimalCtrlLoop(SimpleManagedCtrlLoop):
             state_estimator = DummyStateEstimator(squawk=False)
 
         if global_planner is None:
+            # NOTE: imported lazily -- the UI interfaces pull in pygame (which prints a banner and
+            # initialises SDL) and `inputs`, and a library import should not have those side
+            # effects for users who never ask for a UI global planner.
+            from ..components.global_planners.ui_reference_generators import (  # pylint: disable=import-outside-toplevel
+                JoystickGlobalPlannerInterface,
+                KeyboardGlobalPlannerInterface,
+            )
+
             try:
                 global_planner = JoystickGlobalPlannerInterface(check_connection_at_init=True)
                 logger.info("Using Joystick interface.")

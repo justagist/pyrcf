@@ -23,6 +23,23 @@ class CtrlLoopDebuggerBase(ABC):
             self._rate_trigger = RateTrigger(rate=self._rate, clock=clock)
             logger.debug(f"{self.__class__.__name__}: Setting trigger rate to {self._rate}Hz.")
 
+    def is_due(self) -> bool:
+        """Whether this debugger would run if `run_once` were called now, WITHOUT consuming the
+        trigger.
+
+        This lets the control loop skip gathering (and deep-copying) loop data for debuggers that
+        are not going to run this iteration. Time only moves forwards, so a debugger reporting True
+        here will still report True from `_should_run()` immediately afterwards.
+
+        Returns:
+            bool: True if this debugger is due to run.
+        """
+        if self._rate is None:
+            return True
+        if self._rate <= 0.0:
+            return False
+        return self._rate_trigger.next_tick - self._rate_trigger.clock.get_time() <= 0.0
+
     def _should_run(self):
         if self._rate is None:
             return True

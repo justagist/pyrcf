@@ -90,32 +90,34 @@
 
 ## Testing
 
-Test coverage is still low outside `core/types`, the control loop and the logging module.
-Highest-value gaps, roughly in order:
+Coverage of the pure/offline layers is now reasonable (`core/types`, control loop, logging,
+`math_utils`, `frame_transforms`, `PinocchioInterface`, the PD controllers, the joint reference
+interpolator, the data recorder round trip, and the debugger rate gating).
 
-- [ ] `PinocchioInterface` (largest untested module)
-- [ ] `math_utils` / `frame_transforms` (pure functions, cheap to test)
-- [ ] local planners (`JointReferenceInterpolator`, `PybulletIKReferenceInterpolator`)
-- [ ] `JointPDController` / `GravityCompensatedPDController`
-- [ ] debuggers, especially the record/parse round trip of `ComponentDataRecorderDebugger`
-- [ ] UI interfaces (need pygame/joystick to be faked)
+Remaining gaps:
+
+- [ ] UI interfaces (`KeyboardGlobalPlannerInterface`, `JoystickGlobalPlannerInterface`,
+      `PybulletGUIGlobalPlannerInterface`) -- need pygame/`inputs` to be faked
+- [ ] `PybulletIKReferenceInterpolator` (needs a running pybullet IK interface)
+- [ ] the pybullet/mujoco robot interfaces beyond contract tests (need a simulator, so probably
+      better as opt-in integration tests than in the default suite)
+- [ ] the zmq publisher/subscriber pair
+- [ ] `PybulletRobotVisualizer` / `PybulletDebugRobot` (GUI)
 
 ## Known issues / follow-ups
 
-- [ ] `KeyboardGlobalPlannerInterface(parallel_mode=True)` starts a thread that processes the
-      pygame event queue exactly once and then exits, so no input is recorded. Either loop the
-      body or drop the option. (pygame events are also not safe to poll off the main thread.)
-- [ ] `JoystickGlobalPlannerInterface` reader thread is non-daemon and blocks in `get_gamepad()`,
-      so `shutdown()` can hang until the next gamepad event. `_check_connection()` likewise blocks
-      until an event arrives, which makes `MinimalCtrlLoop.useWithDefaults()` hang when an idle
-      gamepad is plugged in.
-- [ ] `CtrlLoopDebuggerBase.run_once` deep-copies the whole loop state on every trigger, and
-      agent outputs are deep-copied a second time by `PlannerControllerAgent.get_last_output()`.
-      Costly at high loop rates.
-- [ ] `importing pyrcf` pulls in pygame (via the UI interfaces imported by `MinimalCtrlLoop`),
-      which prints a banner and initialises SDL. Consider importing those lazily.
-- [ ] `PybulletRobot.read()` overwrites `ee_names` with pinocchio's ordering after populating
-      `contact_states` from the simulator's ordering; add an assertion that the two agree.
-- [ ] enable ruff's `B905` (`zip(..., strict=)`) once the affected call sites have tests.
-- [ ] `pyrcf.utils.frame_transforms` imports `multiplyTransforms`/`invertTransform` from pybullet
-      for pure quaternion maths that scipy (already a dependency) can do.
+- [ ] `MujocoRobot`: the MuJoCo Menagerie MJCFs and the matching URDFs frequently disagree, which
+      constrains the MuJoCo backend. Verified: joint names agree for `go2`, `g1`, `anymal_c` but
+      not `iiwa14`, `panda`, `h1`; the legged MJCFs only load with `floating_base=True` (their
+      `home` keyframe is sized for a free joint); and MuJoCo cannot load any `robot_descriptions`
+      URDF at all because the mesh URIs (`package://`, relative paths) go unresolved. The last two
+      are fixable in `mujoco_robot` (drop/resize keyframes when changing the base; resolve
+      `package://` and set `meshdir`).
+- [ ] No single PD gain set is stable in both simulators for `go2`
+      (`examples/utils_demos/demo_sim_backend_swap.py` documents the measurements). Root cause is
+      that `GravityCompensatedPDController` is not a stance controller: for a floating base the
+      generalised gravity term ignores ground reaction forces. A contact-aware whole-body or
+      stance controller would narrow this considerably.
+- [ ] `pylint` in the pinned pixi environment (3.2.6) emits a benign `W0012 unknown-option-value`
+      for `too-many-positional-arguments`, which only exists in pylint >= 3.3. Clears on the next
+      lock bump.

@@ -105,11 +105,12 @@ class PyRCFTypesEncoder(json.JSONEncoder):
             return {
                 "position": o.position,
                 "orientation": {
-                    "quaternion": dict(zip(["x", "y", "z", "w"], o.orientation)),
+                    "quaternion": dict(zip(["x", "y", "z", "w"], o.orientation, strict=True)),
                     "rpy (degrees)": dict(
                         zip(
                             ["roll", "pitch", "yaw"],
                             np.rad2deg(quat2rpy(o.orientation)),
+                            strict=True,
                         )
                     ),
                 },
@@ -129,7 +130,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     "ee_twists"
                 ] and len(_ee_names) == len(attr_vals):  # fmt: skip
                     # expose ee values next to ee names
-                    data[field.name] = dict(zip(_ee_names, self.default(attr_vals)))
+                    data[field.name] = dict(zip(_ee_names, self.default(attr_vals), strict=True))
             return data
         if isinstance(o, RobotCmd) and o.joint_commands.joint_names is not None:
             _j_names = o.joint_commands.joint_names
@@ -140,7 +141,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     data[field.name] = self.default(attr_vals)
                 elif attr_vals is not None and len(_j_names) == len(attr_vals):
                     # expose joint values next to joint names
-                    data[field.name] = dict(zip(_j_names, self.default(attr_vals)))
+                    data[field.name] = dict(zip(_j_names, self.default(attr_vals), strict=True))
             return data
         if isinstance(o, JointStates):
             # hack to make joint names show up for corresponding values
@@ -161,7 +162,7 @@ class PyRCFTypesEncoder(json.JSONEncoder):
                     and len(_j_names) == len(attr_vals)
                 ):
                     # expose joint values next to joint names
-                    data[field.name] = dict(zip(_j_names, self.default(attr_vals)))
+                    data[field.name] = dict(zip(_j_names, self.default(attr_vals), strict=True))
                 # else:
                 #     data[field.name] = self.default(attr_vals)
             return data

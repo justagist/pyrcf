@@ -7,7 +7,7 @@ method is called in the control loop.
 
 from threading import Thread
 import copy
-from inputs import get_gamepad, UnpluggedError
+from inputs import devices, get_gamepad, UnpluggedError
 
 from .ui_base import UIBase
 from ....core.types import GlobalMotionPlan, RobotState
@@ -47,8 +47,10 @@ class JoystickGlobalPlannerInterface(UIBase):
                 not be detected.
         """
         self._keep_alive = True
-        self._runner_thread = Thread(target=self._read_thread)
-        self._connection_verified = False
+        # NOTE: daemon so that a reader blocked in `get_gamepad()` can never keep the process
+        # alive at exit -- that call only returns when the pad produces an event.
+        self._runner_thread = Thread(target=self._read_thread, daemon=True)
+        self._thread_started = False
         if check_connection_at_init and not self._check_connection():
             self._keep_alive = False
             raise NotConnectedError("Could not find joystick.")
@@ -58,19 +60,28 @@ class JoystickGlobalPlannerInterface(UIBase):
         )
         self._mappings = gamepad_mappings
 
-    def _check_connection(self):
-        logger.info(f"{self.__class__.__name__}: Waiting for joystick...")
+    def _check_connection(self) -> bool:
+        """Check whether a gamepad is present, without waiting for the user to touch it.
+
+        NOTE: this deliberately does not call `get_gamepad()`. That blocks until the pad produces
+        an event, so using it as a presence check hangs indefinitely whenever a gamepad is
+        connected but idle -- which in turn hung `MinimalCtrlLoop.useWithDefaults()`.
+
+        Returns:
+            bool: True if at least one gamepad is connected.
+        """
         try:
-            get_gamepad()
+            connected = len(devices.gamepads) > 0
+        except Exception:  # pylint: disable=broad-exception-caught
+            # `inputs` raises assorted errors while enumerating devices on some platforms
+            connected = False
+        if connected:
             logger.info(f"{self.__class__.__name__}: Joystick interface ready!")
-            self._connection_verified = True
-            return True
-        except (IndexError, UnpluggedError):
-            return False
+        else:
+            logger.info(f"{self.__class__.__name__}: No joystick detected.")
+        return connected
 
     def _read_thread(self):
-        if not self._connection_verified:
-            self._check_connection()
         try:
             while self._keep_alive:
                 events = get_gamepad()
@@ -160,12 +171,22 @@ class JoystickGlobalPlannerInterface(UIBase):
         if not self._keep_alive:
             self.shutdown()
             raise NotConnectedError("Could not read joystick input.")
-        if not self._runner_thread.is_alive():
+        if not self._thread_started:
+            # a Thread can only ever be started once, so track it explicitly rather than relying
+            # on is_alive() (which is also False for a thread that has already exited)
+            self._thread_started = True
             self._runner_thread.start()
         return copy.deepcopy(self._global_plan)
 
     def shutdown(self):
         super().shutdown()
         self._keep_alive = False
-        if self._runner_thread.is_alive():
-            self._runner_thread.join()
+        if self._thread_started and self._runner_thread.is_alive():
+            # bounded join: the reader is usually parked inside a blocking `get_gamepad()` and
+            # will not notice `_keep_alive` until the next event, so never wait on it indefinitely
+            self._runner_thread.join(timeout=1.0)
+            if self._runner_thread.is_alive():
+                logger.debug(
+                    f"{self.__class__.__name__}: Joystick reader still blocked on input; leaving"
+                    " it to be reaped as a daemon thread."
+                )

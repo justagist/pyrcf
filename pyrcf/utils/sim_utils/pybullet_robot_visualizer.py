@@ -329,8 +329,12 @@ class PybulletRobotVisualizer:
         pin = pb_robot.get_pinocchio_interface()
         return cls(
             pb_sim_interface=pb_robot._sim_robot,
-            joint_lower_lims=dict(zip(pin.actuated_joint_names, pin.actuated_joint_lower_limits)),
-            joint_upper_lims=dict(zip(pin.actuated_joint_names, pin.actuated_joint_upper_limits)),
+            joint_lower_lims=dict(
+                zip(pin.actuated_joint_names, pin.actuated_joint_lower_limits, strict=True)
+            ),
+            joint_upper_lims=dict(
+                zip(pin.actuated_joint_names, pin.actuated_joint_upper_limits, strict=True)
+            ),
             starting_joint_positions=(
                 starting_joint_positions
                 if (starting_joint_positions is not None and starting_joint_positions != {})
@@ -338,6 +342,7 @@ class PybulletRobotVisualizer:
                     zip(
                         pb_robot._sim_robot.actuated_joint_names,
                         pb_robot._sim_robot.get_actuated_joint_positions(),
+                        strict=True,
                     )
                 )
             ),

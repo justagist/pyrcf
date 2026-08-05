@@ -125,12 +125,25 @@ class RobotInterfaceWithPinocchio(RobotInterface):
                 joint_order=robot_state.joint_states.joint_names,
             )
             if update_ee_states:
-                robot_state.state_estimates.end_effector_states.ee_poses = [
+                ee_states = robot_state.state_estimates.end_effector_states
+                # NOTE: the simulator fills `contact_states`/`contact_forces` indexed by its own
+                # end-effector ordering, and the names are about to be replaced with pinocchio's.
+                # The two are matched positionally, so a length mismatch would silently misalign
+                # contact data against the wrong end-effector.
+                sim_ee_names = ee_states.ee_names
+                pin_ee_names = self._pin_interface.ee_names
+                if sim_ee_names is not None and len(sim_ee_names) != len(pin_ee_names):
+                    raise ValueError(
+                        f"{self.__class__.__name__}: the robot interface reports"
+                        f" {len(sim_ee_names)} end-effector(s) {list(sim_ee_names)} but the"
+                        f" pinocchio model has {len(pin_ee_names)} {list(pin_ee_names)}. These are"
+                        " matched by position, so end-effector state cannot be mapped between"
+                        " them. Pass matching `ee_names` for both models."
+                    )
+                ee_states.ee_poses = [
                     Pose3D(*ee_pose) for ee_pose in self._pin_interface.get_ee_poses()
                 ]
-                robot_state.state_estimates.end_effector_states.ee_names = (
-                    self._pin_interface.ee_names
-                )
+                ee_states.ee_names = pin_ee_names
         else:
             throttled_logging.warning(
                 f"{self.__class__.__name__}: Pinocchio interface does not "

@@ -157,19 +157,24 @@ class SimpleManagedCtrlLoop:
                     # write the commands to the robot
                     self.robot.write(cmd=cmd)
 
-                    if debuggers is not None:
-                        agent_outputs = [
-                            agent.get_last_output() for agent in self.controller_manager.agents
-                        ]
-                        for debugger in debuggers:
-                            debugger.run_once(
-                                t=curr_t,
-                                dt=dt,
-                                robot_state=robot_state,
-                                global_plan=global_plan,
-                                agent_outputs=agent_outputs,
-                                robot_cmd=cmd,
-                            )
+                    if debuggers:
+                        # only collect agent outputs if some debugger is actually going to consume
+                        # them this iteration -- `get_last_output()` deep-copies, which is wasted
+                        # work for a debugger running slower than the control loop
+                        due_debuggers = [d for d in debuggers if d.is_due()]
+                        if due_debuggers:
+                            agent_outputs = [
+                                agent.get_last_output() for agent in self.controller_manager.agents
+                            ]
+                            for debugger in due_debuggers:
+                                debugger.run_once(
+                                    t=curr_t,
+                                    dt=dt,
+                                    robot_state=robot_state,
+                                    global_plan=global_plan,
+                                    agent_outputs=agent_outputs,
+                                    robot_cmd=cmd,
+                                )
 
                     for cb in poststep_callbacks:
                         cb.run_once()

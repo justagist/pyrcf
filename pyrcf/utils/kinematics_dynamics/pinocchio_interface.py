@@ -213,13 +213,13 @@ class PinocchioInterface(pinocchio.RobotWrapper):
         ), f"Could not match expected nq for model. Required model nq: {self.nq}; Current nq obtained: {expected_nq_}."
 
         self.actuated_joint_name_to_q_index: Mapping[str, int] = dict(
-            zip(self.actuated_joint_names, self.actuated_joint_q_ids)
+            zip(self.actuated_joint_names, self.actuated_joint_q_ids, strict=True)
         )
         """Mapping from joint name to index of the joint configuration value in the pinocchio q
         vector."""
 
         self.actuated_joint_name_to_v_index: Mapping[str, int] = dict(
-            zip(self.actuated_joint_names, self.actuated_joint_v_ids)
+            zip(self.actuated_joint_names, self.actuated_joint_v_ids, strict=True)
         )
         """Mapping from joint name to index of the joint velocity value in the pinocchio v
         vector."""

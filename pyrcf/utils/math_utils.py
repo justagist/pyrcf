@@ -331,3 +331,49 @@ def vec2quatskew(vector: Vector3D) -> np.ndarray:
     )
 
     return omega_matrix
+
+
+def invert_transform(position: Vector3D, orientation: QuatType) -> Tuple[Vector3D, QuatType]:
+    """Invert a rigid transform given as a position and orientation quaternion.
+
+    If (position, orientation) describes the pose of frame B in frame A, this returns the pose of
+    frame A in frame B.
+
+    Args:
+        position (Vector3D): Position component of the transform.
+        orientation (QuatType): Orientation quaternion (x,y,z,w) of the transform.
+
+    Returns:
+        Tuple[Vector3D, QuatType]: Position and orientation quaternion (x,y,z,w) of the inverse
+            transform.
+    """
+    inv_rot = Rotation.from_quat(orientation).inv()
+    return -inv_rot.apply(np.asarray(position, dtype=float)), inv_rot.as_quat()
+
+
+def multiply_transforms(
+    position_a: Vector3D,
+    orientation_a: QuatType,
+    position_b: Vector3D,
+    orientation_b: QuatType,
+) -> Tuple[Vector3D, QuatType]:
+    """Compose two rigid transforms (i.e. `T_a @ T_b`).
+
+    If A describes the pose of frame 1 in frame 0 and B the pose of frame 2 in frame 1, the result
+    is the pose of frame 2 in frame 0.
+
+    Args:
+        position_a (Vector3D): Position component of the first transform.
+        orientation_a (QuatType): Orientation quaternion (x,y,z,w) of the first transform.
+        position_b (Vector3D): Position component of the second transform.
+        orientation_b (QuatType): Orientation quaternion (x,y,z,w) of the second transform.
+
+    Returns:
+        Tuple[Vector3D, QuatType]: Position and orientation quaternion (x,y,z,w) of the composed
+            transform.
+    """
+    rot_a = Rotation.from_quat(orientation_a)
+    return (
+        np.asarray(position_a, dtype=float) + rot_a.apply(np.asarray(position_b, dtype=float)),
+        (rot_a * Rotation.from_quat(orientation_b)).as_quat(),
+    )

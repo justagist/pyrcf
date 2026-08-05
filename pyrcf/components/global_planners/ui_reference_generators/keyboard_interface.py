@@ -2,10 +2,11 @@
 
 from typing import Callable, Dict, Tuple
 import copy
-import threading
 import pygame
 
 from .ui_base import UIBase
+from ....core.exceptions import CtrlLoopExitSignal
+from ....core.logging import logger
 from ....core.types import GlobalMotionPlan, RobotState
 from .key_mappings import DEFAULT_KEYBOARD_MAPPING
 from .ui_utils import get_keymapping_doc
@@ -55,7 +56,7 @@ class KeyboardGlobalPlannerInterface(UIBase):
         method is called in the control loop.
 
         NOTE: The pygame window should be in focus for the inputs to be recorded by this class.
-        NOTE: This component initiates a thread for reading keyboard input!
+        NOTE: Closing the pygame window requests a clean shutdown of the control loop.
 
         Args:
             key_mappings (dict[ str, callable[[GlobalMotionPlan], GlobalMotionPlan] ], optional):
@@ -64,8 +65,12 @@ class KeyboardGlobalPlannerInterface(UIBase):
             default_global_plan (GlobalMotionPlan, optional): the default to use when initialising
                 (and when reset it called (to be implemented)). Defaults to GlobalMotionPlan().
             window_size (Tuple[int, int]): pygame window size in pixels. Defaults to (500, 500).
-            parallel_mode (bool): If set to True, this will run in a separate thread (continuously
-                recording and storing last user input).
+            parallel_mode (bool): DEPRECATED and ignored. Keyboard input is always polled
+                synchronously from `process_user_input` (i.e. once per control loop iteration,
+                which is far more often than a user can type). This option previously started a
+                thread that drained the pygame event queue exactly once and then exited, so no
+                input was ever recorded after construction. It cannot be fixed by looping either:
+                pygame's event queue may only be pumped from the thread that created the display.
             verbose (bool): If true, will print command on console every time user inputs a valid
                 key.
         """
@@ -73,8 +78,13 @@ class KeyboardGlobalPlannerInterface(UIBase):
             GlobalMotionPlan() if default_global_plan is None else default_global_plan
         )
         self._key_mappings = key_mappings if key_mappings is not None else DEFAULT_KEYBOARD_MAPPING
-        self._parallel_mode = parallel_mode
         self._verbose = verbose
+        if parallel_mode:
+            logger.warning(
+                f"{self.__class__.__name__}: `parallel_mode` is deprecated and ignored. Keyboard"
+                " input is polled synchronously in the control loop instead (pygame's event queue"
+                " can only be pumped from the thread that created the display)."
+            )
 
         pygame.init()
         pygame.mixer.quit()  # disable audio (otherwise alsa overrun warnings)
@@ -90,16 +100,18 @@ class KeyboardGlobalPlannerInterface(UIBase):
 
         pygame.display.update()
 
-        if self._parallel_mode:
-            self._keyboard_thread = threading.Thread(
-                target=self._update_global_plan_from_user_input
-            )
-            self._keyboard_thread.start()
-
     def _update_global_plan_from_user_input(self) -> None:
+        """Drain the pygame event queue and apply any mapped key presses to the global plan.
+
+        Raises:
+            CtrlLoopExitSignal: If the user closed the pygame window.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                # let the control loop shut every component down cleanly instead of tearing
+                # pygame down underneath ourselves and failing on the next poll
+                logger.info(f"{self.__class__.__name__}: Window closed; requesting loop shutdown.")
+                raise CtrlLoopExitSignal
 
             if event.type == pygame.KEYDOWN:
                 c = pygame.key.name(event.key)
@@ -128,9 +140,10 @@ class KeyboardGlobalPlannerInterface(UIBase):
             self._global_plan.joint_references.joint_positions = copy.deepcopy(
                 robot_state.joint_states.joint_positions
             )
-        if not self._parallel_mode:
-            self._update_global_plan_from_user_input()
-        return self._global_plan
+        self._update_global_plan_from_user_input()
+        # return a copy so that downstream components cannot mutate this interface's own plan
+        # (matches JoystickGlobalPlannerInterface)
+        return copy.deepcopy(self._global_plan)
 
     def shutdown(self):
         super().shutdown()
@@ -138,5 +151,3 @@ class KeyboardGlobalPlannerInterface(UIBase):
             pygame.quit()
         except TypeError:
             pass
-        if self._parallel_mode:
-            self._keyboard_thread.join()

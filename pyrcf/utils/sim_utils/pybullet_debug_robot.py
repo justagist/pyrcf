@@ -95,11 +95,13 @@ class PybulletDebugRobot:
         j_infos = [[] for _ in range(len(_pb_keys))]
         for i in range(num_js):
             j_info_tuple = pb.getJointInfo(self._viz_robot_id, i, physicsClientId=cid)
-            for jinfo, info_item in zip(j_infos, j_info_tuple):
+            # NOTE: strict=False on purpose -- pybullet's getJointInfo returns 17 fields and
+            # `_pb_keys` names only the first 3, so the truncation here is intended.
+            for jinfo, info_item in zip(j_infos, j_info_tuple, strict=False):
                 if isinstance(info_item, bytes):
                     info_item = info_item.decode()
                 jinfo.append(info_item)
-        jinfo = dict(zip(_pb_keys, j_infos))
+        jinfo = dict(zip(_pb_keys, j_infos, strict=True))
         self._actuated_joint_names = []
 
         for n, name in enumerate(jinfo["jointName"]):
@@ -109,7 +111,7 @@ class PybulletDebugRobot:
             self._actuated_joint_names.append(name)
 
         joint_ids = jinfo["jointIndex"]
-        self._joint_name_to_index = dict(zip(jinfo["jointName"], joint_ids))
+        self._joint_name_to_index = dict(zip(jinfo["jointName"], joint_ids, strict=True))
 
     def disable_visualisation(self):
         self.set_visual_rgba(rgba=[0, 0, 0, 0])
@@ -143,7 +145,7 @@ class PybulletDebugRobot:
     def set_joint_positions(self, joint_positions: np.ndarray, joint_names: List[str] = None):
         if joint_names is None:
             joint_names = self._actuated_joint_names
-        for name, pos in zip(joint_names, joint_positions):
+        for name, pos in zip(joint_names, joint_positions, strict=True):
             pb.resetJointState(
                 self._viz_robot_id,
                 self._joint_name_to_index[name],

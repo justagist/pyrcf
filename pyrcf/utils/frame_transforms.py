@@ -2,9 +2,14 @@
 
 from typing import Tuple, TypeAlias
 import numpy as np
-from pybullet import multiplyTransforms, invertTransform
 
-from .math_utils import quat2rpy, rpy2quat, vec2skew
+from .math_utils import (
+    invert_transform,
+    multiply_transforms,
+    quat2rpy,
+    rpy2quat,
+    vec2skew,
+)
 
 QuatType: TypeAlias = np.ndarray
 """Numpy array representating quaternion in format [x,y,z,w]"""
@@ -38,8 +43,8 @@ def transform_pose_to_frame(
         Tuple[Vector3D, QuatType]: Position and orientation of the input pose in the new target
             frame.
     """
-    p, q = multiplyTransforms(
-        *invertTransform(frame_2_pos_in_frame_1, frame_2_quat_in_frame_1),
+    p, q = multiply_transforms(
+        *invert_transform(frame_2_pos_in_frame_1, frame_2_quat_in_frame_1),
         pos_in_frame_1,
         quat_in_frame_1,
     )
@@ -141,7 +146,7 @@ class PoseTrasfrom:
         return transform_pose_to_frame(
             p_in_base,
             q_in_base,
-            *invertTransform(
+            *invert_transform(
                 *(
                     PoseTrasfrom.BASE_FRAME_POSE_IN_TELEOP(
                         base_pos_in_world,
@@ -162,7 +167,7 @@ class PoseTrasfrom:
         return transform_pose_to_frame(
             p_in_teleop,
             q_in_teleop,
-            *invertTransform(
+            *invert_transform(
                 *PoseTrasfrom.TELEOP_FRAME_POSE_IN_WORLD(base_pos_in_world, base_ori_in_world)
             ),
         )
