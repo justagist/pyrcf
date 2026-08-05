@@ -8,6 +8,7 @@ def package_available(package_name: str):
 
 # optional third party libraries
 TORCH_AVAILABLE = package_available("torch")
+MUJOCO_ROBOT_AVAILABLE = package_available("mujoco_robot")
 
 
-__all__ = ["TORCH_AVAILABLE"]
+__all__ = ["MUJOCO_ROBOT_AVAILABLE", "TORCH_AVAILABLE"]

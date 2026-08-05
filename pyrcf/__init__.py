@@ -68,7 +68,11 @@ from .components.local_planners import (
     BlindForwardingPlanner,
     JointReferenceInterpolator,
 )
-from .components.robot_interfaces.simulation import PybulletRobot
+from .components.robot_interfaces.simulation import (
+    MujocoRobot,
+    PybulletRobot,
+    SimulatedRobotInterface,
+)
 from .components.state_estimators import DummyStateEstimator
 from .components.controller_manager import ControllerManagerBase, SimpleControllerManager
 from .components.controller_manager.command_accumulators.cmd_accumulation_policies import (
@@ -110,8 +114,10 @@ __all__ = [
     "GravityCompensatedPDController",
     "JointPDController",
     "JointReferenceInterpolator",
+    "MujocoRobot",
     "PlannerControllerAgent",
     "PybulletRobot",
+    "SimulatedRobotInterface",
     "SegwayPIDBalanceController",
     "SimpleCmdOverride",
     "SimpleControllerManager",

@@ -172,3 +172,6 @@ log/**
 
 managed_context/metadata.json
 test_suite_analysis/metadata.json
+
+# MuJoCo writes this in the cwd on model warnings
+MUJOCO_LOG.TXT

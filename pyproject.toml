@@ -81,6 +81,12 @@ test = [
 ]
 docs = ["sphinxcontrib-napoleon", "sphinx-rtd-theme", "sphinx-autoapi"]
 torch = ["torch"]
+# NOTE: kept optional deliberately -- mujoco is only needed for the MuJoCo robot interface, and
+# the default install should stay small.
+# NOTE: `mujoco-robot` requires robot-descriptions>=2 while `pybullet-robot` still pins <2. The
+# two work together in practice (both only use the description loader API, which is unchanged),
+# but pip will report a dependency conflict until pybullet-robot relaxes its pin.
+mujoco = ["mujoco-robot>=0.1.1"]
 
 [project.urls]
 Source = "https://github.com/justagist/pyrcf"
@@ -96,6 +102,12 @@ py310 = ["py310", "test"]
 py311 = ["py311", "test"]
 py312 = ["py312", "test"]
 torch = ["py312", "torch"]
+# NOTE: there is deliberately no `mujoco` pixi environment yet. `mujoco-robot` requires
+# robot-descriptions>=2 while `pybullet-robot` still pins <2, and pixi's resolver rejects that
+# outright -- an unsolvable environment fails the whole workspace, including CI. The two packages
+# do work together in practice (verified: both only use the description-loader API, which is
+# unchanged across that major bump), so `pip install pyrcf[mujoco]` succeeds with a pip warning.
+# Add the environment here once pybullet-robot relaxes its robot-descriptions pin.
 docs = ["py312", "docs"]
 
 [tool.pixi.tasks]

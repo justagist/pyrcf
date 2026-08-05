@@ -993,6 +993,7 @@ packages:
   - sphinx-rtd-theme ; extra == 'docs'
   - sphinx-autoapi ; extra == 'docs'
   - torch ; extra == 'torch'
+  - mujoco-robot>=0.1.1 ; extra == 'mujoco'
   requires_python: '>=3.10'
 - pypi: https://files.pythonhosted.org/packages/00/17/bdf2718acddb1e60380c7c0cbfe08d0ab32f2e074bcea441dc11845cfea9/cmeel_octomap-1.9.8.2-3-py3-none-manylinux_2_28_x86_64.whl
   name: cmeel-octomap
