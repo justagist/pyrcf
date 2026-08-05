@@ -32,7 +32,11 @@ if MUJOCO_ROBOT_AVAILABLE:
         get_urdf_from_awesome_robot_descriptions,
     )
 
-# pylint: disable = C0103
+# NOTE: `mujoco-robot` is an optional dependency, so it is imported conditionally above. Every code
+# path that touches it is reached only after the `MUJOCO_ROBOT_AVAILABLE` check in `__init__` has
+# raised, but static analysis cannot follow that, hence the module-level suppression (same pattern
+# as `torchscript_agent_base.py`).
+# pylint: disable = C0103, possibly-used-before-assignment
 
 
 class MujocoRobot(SimulatedRobotInterface):
